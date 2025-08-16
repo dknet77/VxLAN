@@ -10,5 +10,4 @@
 - [LAB 2-3: VxLAN. Aналоги vPC](LABS/2-3)
 - [LAB 2-4: VxLAN. Оптимизация таблиц маршрутизации ](LABS/2-4)
 
-- 
 - [PROJECT: VxLAN. EVPN](LABS/1-9)
