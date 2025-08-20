@@ -19,4 +19,4 @@
 
 ## Настройки OSPF для SP-1-1, S-1-2, S-1-3 (ABR routers):
 
-## Настройки OSPF для L-1-1(Stub Area), L-1-2(Totaly Stub Area), L-1-3(NSSA)
+## Настройки OSPF для L-1-1(Stub Area), L-1-2(Totaly Stub Area), L-1-3(Totaly NSSA)
