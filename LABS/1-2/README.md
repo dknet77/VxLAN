@@ -16,6 +16,7 @@
 На каждом роутере изменил reference-bandwidth на 100Gb/s и authentication (MD5/SHA-256).
 
 SS-1 и SS-2 - Backbone Routers.  Через эти роутеры будем стыковать POD1 с другим датацентром POD2.
+![1-2-5.png](1-2-5.png)
 
 S-1-1, S-1-2 - ABR Routers, осуществляют взаимодействие Backbone Area и NSSA, Totally NSSA, Standard Area.
  Разбитие на множество зон сделано для проработки практических навыков. 
