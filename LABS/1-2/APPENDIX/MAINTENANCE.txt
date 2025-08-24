@@ -1,0 +1,116 @@
+L-1-3# sh ip route 10.0.1.1
+...
+10.0.1.1/32, ubest/mbest: 2/0
+    *via 10.2.1.4, Eth1/2, [110/201], 20:01:11, ospf-11, inter
+    *via 10.2.2.4, Eth1/3, [110/201], 20:01:03, ospf-11, inter
+
+L-1-3# traceroute 10.0.1.1
+traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 40 byte packets
+ 1  10.2.2.4 (10.2.2.4)  51.66 ms  5.753 ms  4.177 ms
+ 2  10.0.1.1 (10.0.1.1)  20.893 ms  15.255 ms  12.641 ms
+
+L-1-3# sh run int ethernet 1/3
+...
+  description *** LINK TO S-1-2 ***
+  ip address 10.2.2.5/31
+...
+L-1-3#
+
+L-1-3# sh ip ospf database summary 10.0.1.1 detail
+        OSPF Router with ID (10.0.0.13) (Process ID 11 VRF default)
+
+                Summary Network Link States (Area 0.0.0.3)
+
+   LS age: 742
+   Options: 0x2 (No TOS-capability, No DC)
+   LS Type: Network Summary
+   Link State ID: 10.0.1.1 (Network address)
+   Advertising Router: 10.0.11.1
+   LS Seq Number: 0x8000002a
+   Checksum: 0xc9e2
+   Length: 28
+   Network Mask: /32
+      TOS:   0 Metric: 101
+
+   LS age: 716
+   Options: 0x2 (No TOS-capability, No DC)
+   LS Type: Network Summary
+   Link State ID: 10.0.1.1 (Network address)
+   Advertising Router: 10.0.12.1
+   LS Seq Number: 0x8000002a
+   Checksum: 0xc2e8
+   Length: 28
+   Network Mask: /32
+      TOS:   0 Metric: 101
+
+
+L-1-3#
+
+##############################################
+######## POISONING the path ;) ###############
+##############################################
+
+S-1-2(config-router)# max-metric router-lsa ?
+  <CR>
+  external-lsa  External LSAs
+  include-stub  Advertise Max metric for Stub links as well
+  on-startup    Effective only at startup
+  summary-lsa   Summary LSAs
+
+S-1-2(config-router)# max-metric router-lsa
+S-1-2(config-router)#
+
+##############################################
+
+L-1-3# sh ip ospf database summary 10.0.1.1 detail
+        OSPF Router with ID (10.0.0.13) (Process ID 11 VRF default)
+
+                Summary Network Link States (Area 0.0.0.3)
+
+   LS age: 945
+   Options: 0x2 (No TOS-capability, No DC)
+   LS Type: Network Summary
+   Link State ID: 10.0.1.1 (Network address)
+   Advertising Router: 10.0.11.1
+   LS Seq Number: 0x8000002a
+   Checksum: 0xc9e2
+   Length: 28
+   Network Mask: /32
+      TOS:   0 Metric: 101
+
+   LS age: 52
+   Options: 0x2 (No TOS-capability, No DC)
+   LS Type: Network Summary
+   Link State ID: 10.0.1.1 (Network address)
+   Advertising Router: 10.0.12.1
+   LS Seq Number: 0x8000002b
+   Checksum: 0xd23c
+   Length: 28
+   Network Mask: /32
+      TOS:   0 Metric: 65536
+
+
+L-1-3#
+L-1-3# sh ip route 10.0.1.1
+...
+10.0.1.1/32, ubest/mbest: 1/0
+    *via 10.2.1.4, Eth1/2, [110/201], 20:19:26, ospf-11, inter
+L-1-3#
+L-1-3# traceroute 10.0.1.1
+traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 40 byte packets
+ 1  10.2.1.4 (10.2.1.4)  27.461 ms  6.304 ms  6.079 ms
+ 2  10.0.1.1 (10.0.1.1)  22.666 ms  36.089 ms  25.618 ms
+L-1-3#
+L-1-3# ping 10.0.1.1
+PING 10.0.1.1 (10.0.1.1): 56 data bytes
+64 bytes from 10.0.1.1: icmp_seq=0 ttl=253 time=39.386 ms
+64 bytes from 10.0.1.1: icmp_seq=1 ttl=253 time=15.774 ms
+64 bytes from 10.0.1.1: icmp_seq=2 ttl=253 time=15.723 ms
+64 bytes from 10.0.1.1: icmp_seq=3 ttl=253 time=13.201 ms
+64 bytes from 10.0.1.1: icmp_seq=4 ttl=253 time=12.995 ms
+
+--- 10.0.1.1 ping statistics ---
+5 packets transmitted, 5 packets received, 0.00% packet loss
+round-trip min/avg/max = 12.995/19.415/39.386 ms
+L-1-3#
+

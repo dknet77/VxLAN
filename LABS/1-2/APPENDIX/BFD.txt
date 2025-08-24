@@ -1,0 +1,57 @@
+############################# BFD ###################################
+
+interface Ethernet0/1
+...
+ip router ospf 11 area 0.0.0.0
+bfd interval 50 min_rx 50 multiplier 3
+!
+router ospf 11
+bfd all-interfaces
+
+OR
+
+interface Ethernet0/1
+ip ospf bfd
+bfd interval 50 min_rx 50 multiplier 3
+
+# - interval 50: We want to send BFD control packets every 50 milliseconds.
+# - min_rx 50: We want to receive BFD control packets from our neighbor every 50 ms.
+# - multiplier 3: We declare the neighbor down if we miss 3 consecutive packets (3 x 50ms = 150ms detection time).
+
+############################# MICRO BFD ###################################
+ROUTER# feature lacp
+
+Cost = Reference-BW / Interface-BW
+Пример: Port-Channel из 2x10G = 20 Гбит/с
+OSPF Cost = 100,000 / 20,000 = 5
+
+Без Micro-BFD: Обнаружение за 1-3 секунды (LACP)
+Micro-BFD:	Обнаружение за 50-300 мс
+
+1) Падает 1 линия из 2 → Bandwidth уменьшается с 20G до 10G
+2) OSPF пересчитывает cost: 100,000 / 10,000 = 10
+3) Происходит convergence OSPF (обычно за секунды)
+
+
+
+interface GigabitEthernet0/1
+  channel-group 1 mode active
+!
+interface GigabitEthernet0/2
+  channel-group 1 mode active
+!
+interface Port-channel1
+  ip address 10.0.12.1 255.255.255.0
+  bfd interval 50 min_rx 50 multiplier 3
+  bfd mode micro
+  ...
+!
+router ospf 11
+  bfd all-interfaces
+!
+Router# show bfd neighbors
+IPv4 Sessions
+
+NeighAddr                              LD/RD         RH/RS     State     Int
+10.0.12.2                              4097/4097     Up        Up        Gi0/1
+10.0.12.2                              4098/4098     Up        Up        Gi0/2
