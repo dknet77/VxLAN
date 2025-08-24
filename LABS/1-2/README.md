@@ -33,7 +33,13 @@ S-1-1, S-1-2 - ABR Routers, осуществляют взаимодействи�
 
 Зона типа: Standard Area находится на S-1-1/S-1-2 и L-1-3.  Использовал redistribution connected с помощью route-map.
 
+
+## Дополнительно:
+Настройки для каждого роутера приведены здесь: [CONFIGS](https://github.com/dknet77/VxLAN/tree/main/LABS/1-2/CONFIGS)
+
 Отработал сценарий вывода трафика с роутера, для последующих работ: [MAINTENANCE](https://github.com/dknet77/VxLAN/blob/main/LABS/1-2/APPENDIX/MAINTENANCE.txt)
+
+
 
 ## Настройки OSPF для Super Spine (Backbone routers):
 
