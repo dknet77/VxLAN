@@ -1,0 +1,268 @@
+S-1-2# term length 0
+S-1-2# show ip ospf neighbor
+ OSPF Process ID 11 VRF default
+ Total number of neighbors: 5
+ Neighbor ID     Pri State            Up Time  Address         Interface
+ 10.0.0.11         1 FULL/ -          12:09:57 10.2.2.1        Eth1/2
+ 10.0.0.12         1 FULL/ -          11:57:29 10.2.2.3        Eth1/3
+ 10.0.0.13         1 FULL/ -          18:00:00 10.2.2.5        Eth1/4
+ 10.0.1.1          1 FULL/ -          22:59:53 10.0.1.1        Eth1/5
+ 10.0.2.1          1 FULL/ -          22:42:57 10.0.2.1        Eth1/6
+S-1-2# show ip ospf database
+        OSPF Router with ID (10.0.12.1) (Process ID 11 VRF default)
+
+                Router Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age        Seq#       Checksum Link Count
+10.0.1.1        10.0.1.1        847        0x80000097 0x8cf5   3
+10.0.2.1        10.0.2.1        1657       0x80000030 0xd410   3
+10.0.11.1       10.0.11.1       94         0x80000094 0x6710   3
+10.0.12.1       10.0.12.1       96         0x8000007f 0xc6c1   3
+
+                Summary Network Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+10.0.0.11       10.0.11.1       84         0x8000001a 0x9023
+10.0.0.11       10.0.12.1       86         0x8000001a 0x8929
+10.0.0.12       10.0.11.1       1175       0x80000019 0x882b
+10.0.0.12       10.0.12.1       1166       0x80000019 0x8131
+10.0.0.13       10.0.11.1       1065       0x80000025 0x6640
+10.0.0.13       10.0.12.1       1056       0x80000025 0x5f46
+10.2.1.0        10.0.11.1       304        0x80000027 0xb1fe
+10.2.1.0        10.0.12.1       86         0x8000001a 0xb0a7
+10.2.1.2        10.0.11.1       1747       0x80000025 0xa10f
+10.2.1.2        10.0.12.1       1166       0x80000019 0x9eb8
+10.2.1.4        10.0.11.1       1737       0x80000025 0x8d21
+10.2.1.4        10.0.12.1       1056       0x80000025 0x72d6
+10.2.2.0        10.0.11.1       84         0x8000001a 0xacab
+10.2.2.0        10.0.12.1       716        0x80000028 0x9d10
+10.2.2.2        10.0.11.1       1175       0x80000019 0x9abc
+10.2.2.2        10.0.12.1       1717       0x80000025 0x8f1f
+10.2.2.4        10.0.11.1       1065       0x80000025 0x6eda
+10.2.2.4        10.0.12.1       1707       0x80000025 0x7b31
+
+                Summary ASBR Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+10.0.0.13       10.0.11.1       1696       0x8000001a 0x644d
+10.0.0.13       10.0.12.1       1697       0x8000001a 0x5d53
+10.0.11.1       10.0.12.1       86         0x8000001a 0x4805
+10.0.12.1       10.0.11.1       104        0x8000001a 0x4409
+
+                Router Link States (Area 0.0.0.1)
+
+Link ID         ADV Router      Age        Seq#       Checksum Link Count
+10.0.0.11       10.0.0.11       93         0x80000033 0x9f08   5
+10.0.11.1       10.0.11.1       84         0x8000002f 0xb733   2
+10.0.12.1       10.0.12.1       96         0x8000002f 0xc71f   2
+
+                Summary Network Link States (Area 0.0.0.1)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+10.0.0.12       10.0.11.1       1175       0x80000019 0x2e7f
+10.0.0.12       10.0.12.1       1166       0x8000001a 0x2586
+10.0.0.13       10.0.11.1       1065       0x80000025 0x6640
+10.0.0.13       10.0.12.1       1056       0x80000026 0x5d47
+10.0.1.1        10.0.11.1       304        0x80000027 0xcfdf
+10.0.1.1        10.0.12.1       1306       0x80000026 0xcae4
+10.0.2.1        10.0.11.1       304        0x80000027 0xc4e9
+10.0.2.1        10.0.12.1       1306       0x80000026 0xbfee
+10.0.11.1       10.0.11.1       304        0x80000027 0x7594
+10.0.11.1       10.0.12.1       1306       0x80000026 0x48f8
+10.0.12.1       10.0.11.1       304        0x80000027 0x42fd
+10.0.12.1       10.0.12.1       1306       0x80000026 0x65a3
+10.2.1.2        10.0.11.1       1747       0x80000025 0xa10f
+10.2.1.2        10.0.12.1       1166       0x80000028 0x261c
+10.2.1.4        10.0.11.1       1737       0x80000025 0x8d21
+10.2.1.4        10.0.12.1       1056       0x80000026 0x70d7
+10.2.2.2        10.0.11.1       1175       0x80000028 0x2220
+10.2.2.2        10.0.12.1       1717       0x80000025 0x8f1f
+10.2.2.4        10.0.11.1       1065       0x80000026 0x6cdb
+10.2.2.4        10.0.12.1       1707       0x80000025 0x7b31
+
+                Type-7 AS External Link States (Area 0.0.0.1)
+
+Link ID         ADV Router      Age        Seq#       Checksum Tag
+0.0.0.0         10.0.11.1       1747       0x80000019 0x1192    0
+0.0.0.0         10.0.12.1       1737       0x80000019 0x0a98    0
+10.8.0.0        10.0.0.11       123        0x8000001a 0x2c65    0
+
+                Router Link States (Area 0.0.0.2)
+
+Link ID         ADV Router      Age        Seq#       Checksum Link Count
+10.0.0.12       10.0.0.12       1176       0x8000002d 0xf6ab   5
+10.0.11.1       10.0.11.1       1185       0x8000002a 0x14d6   2
+10.0.12.1       10.0.12.1       1166       0x8000002a 0x24c2   2
+
+                Summary Network Link States (Area 0.0.0.2)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+0.0.0.0         10.0.11.1       1185       0x80000019 0x3dea
+0.0.0.0         10.0.12.1       1176       0x80000019 0x36f0
+
+                Type-7 AS External Link States (Area 0.0.0.2)
+
+Link ID         ADV Router      Age        Seq#       Checksum Tag
+0.0.0.0         10.0.11.1       1185       0x80000019 0x1192    0
+0.0.0.0         10.0.12.1       1176       0x80000019 0x0a98    0
+10.9.0.0        10.0.0.12       1266       0x80000019 0x2a65    0
+192.168.88.0    10.0.0.12       184        0x80000019 0x24d8    100
+
+                Router Link States (Area 0.0.0.3)
+
+Link ID         ADV Router      Age        Seq#       Checksum Link Count
+10.0.0.13       10.0.0.13       1694       0x80000029 0xa4fc   5
+10.0.11.1       10.0.11.1       94         0x80000027 0xc628   2
+10.0.12.1       10.0.12.1       96         0x80000027 0xd614   2
+
+                Summary Network Link States (Area 0.0.0.3)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+10.0.0.11       10.0.11.1       84         0x8000001b 0x8e24
+10.0.0.11       10.0.12.1       86         0x8000001a 0x8929
+10.0.0.12       10.0.11.1       1175       0x80000019 0x882b
+10.0.0.12       10.0.12.1       1166       0x8000001a 0x7f32
+10.0.1.1        10.0.11.1       1737       0x80000025 0xd3dd
+10.0.1.1        10.0.12.1       1707       0x80000025 0xcce3
+10.0.2.1        10.0.11.1       1737       0x80000025 0xc8e7
+10.0.2.1        10.0.12.1       1707       0x80000025 0xc1ed
+10.0.11.1       10.0.11.1       1737       0x80000025 0x7992
+10.0.11.1       10.0.12.1       1707       0x80000025 0x4af7
+10.0.12.1       10.0.11.1       1737       0x80000025 0x46fb
+10.0.12.1       10.0.12.1       1707       0x80000025 0x67a2
+10.2.1.0        10.0.11.1       1737       0x80000025 0xb5fc
+10.2.1.0        10.0.12.1       86         0x80000029 0x92b6
+10.2.1.2        10.0.11.1       1737       0x80000025 0xa10f
+10.2.1.2        10.0.12.1       1166       0x80000028 0x80c7
+10.2.2.0        10.0.11.1       84         0x8000002b 0x8abc
+10.2.2.0        10.0.12.1       716        0x80000027 0x9f0f
+10.2.2.2        10.0.11.1       1175       0x80000028 0x7ccb
+10.2.2.2        10.0.12.1       1707       0x80000025 0x8f1f
+
+                Type-5 AS External Link States
+
+Link ID         ADV Router      Age        Seq#       Checksum Tag
+10.8.0.0        10.0.12.1       86         0x80000019 0x8c0c    0
+10.9.0.0        10.0.12.1       1166       0x80000018 0x9007    0
+10.10.0.0       10.0.0.13       1694       0x8000001a 0x7535    0
+192.168.88.0    10.0.12.1       176        0x80000018 0x8a7a    100
+
+S-1-2# show ip ospf interface
+ Ethernet1/2 is up, line protocol is up
+    IP address 10.2.2.0/31
+    Process ID 11 VRF default, area 0.0.0.1
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 4, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:06
+    Message-digest authentication, using key id 1
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 5
+ Ethernet1/3 is up, line protocol is up
+    IP address 10.2.2.2/31
+    Process ID 11 VRF default, area 0.0.0.2
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 5, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:08
+    Message-digest authentication, using key id 1
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 3
+ Ethernet1/4 is up, line protocol is up
+    IP address 10.2.2.4/31
+    Process ID 11 VRF default, area 0.0.0.3
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 6, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:02
+    Message-digest authentication, using key id 1
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 1
+ Ethernet1/5 is up, line protocol is up
+    Unnumbered interface using IP address of loopback1 (10.0.12.1)
+    Process ID 11 VRF default, area 0.0.0.0
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 2, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:02
+    Message-digest authentication, using keychain MY-CHAIN (ready)
+      Sending SA: Key id 1, Algorithm HMAC-SHA-256
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 1
+ Ethernet1/6 is up, line protocol is up
+    Unnumbered interface using IP address of loopback1 (10.0.12.1)
+    Process ID 11 VRF default, area 0.0.0.0
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 3, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:08
+    Message-digest authentication, using key id 1
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 1
+ loopback1 is up, line protocol is up
+    IP address 10.0.12.1/32
+    Process ID 11 VRF default, area 0.0.0.0
+    Enabled by interface configuration
+    State LOOPBACK, Network type LOOPBACK, cost 1
+    Index 1
+S-1-2# show ip route
+IP Route Table for VRF "default"
+'*' denotes best ucast next-hop
+'**' denotes best mcast next-hop
+'[x/y]' denotes [preference/metric]
+'%<string>' in via output denotes VRF <string>
+
+10.0.0.11/32, ubest/mbest: 1/0
+    *via 10.2.2.1, Eth1/2, [110/101], 12:09:52, ospf-11, intra
+10.0.0.12/32, ubest/mbest: 1/0
+    *via 10.2.2.3, Eth1/3, [110/101], 11:57:24, ospf-11, intra
+10.0.0.13/32, ubest/mbest: 1/0
+    *via 10.2.2.5, Eth1/4, [110/101], 17:59:55, ospf-11, intra
+10.0.1.1/32, ubest/mbest: 1/0
+    *via 10.0.1.1, Eth1/5, [110/101], 22:59:48, ospf-11, intra
+10.0.2.1/32, ubest/mbest: 1/0
+    *via 10.0.2.1, Eth1/6, [110/101], 22:42:57, ospf-11, intra
+10.0.11.1/32, ubest/mbest: 2/0
+    *via 10.0.1.1, Eth1/5, [110/201], 22:43:14, ospf-11, intra
+    *via 10.0.2.1, Eth1/6, [110/201], 22:42:57, ospf-11, intra
+10.0.12.1/32, ubest/mbest: 2/0, attached
+    *via 10.0.12.1, Lo1, [0/0], 2d12h, local
+    *via 10.0.12.1, Lo1, [0/0], 2d12h, direct
+10.2.1.0/31, ubest/mbest: 1/0
+    *via 10.2.2.1, Eth1/2, [110/200], 12:09:52, ospf-11, intra
+10.2.1.2/31, ubest/mbest: 1/0
+    *via 10.2.2.3, Eth1/3, [110/200], 11:57:24, ospf-11, intra
+10.2.1.4/31, ubest/mbest: 1/0
+    *via 10.2.2.5, Eth1/4, [110/200], 17:59:55, ospf-11, intra
+10.2.2.0/31, ubest/mbest: 1/0, attached
+    *via 10.2.2.0, Eth1/2, [0/0], 18:34:19, direct
+10.2.2.0/32, ubest/mbest: 1/0, attached
+    *via 10.2.2.0, Eth1/2, [0/0], 18:34:19, local
+10.2.2.2/31, ubest/mbest: 1/0, attached
+    *via 10.2.2.2, Eth1/3, [0/0], 18:10:49, direct
+10.2.2.2/32, ubest/mbest: 1/0, attached
+    *via 10.2.2.2, Eth1/3, [0/0], 18:10:49, local
+10.2.2.4/31, ubest/mbest: 1/0, attached
+    *via 10.2.2.4, Eth1/4, [0/0], 18:10:38, direct
+10.2.2.4/32, ubest/mbest: 1/0, attached
+    *via 10.2.2.4, Eth1/4, [0/0], 18:10:38, local
+10.8.0.0/24, ubest/mbest: 1/0
+    *via 10.2.2.1, Eth1/2, [110/201], 12:09:52, ospf-11, nssa type-1
+10.9.0.0/24, ubest/mbest: 1/0
+    *via 10.2.2.3, Eth1/3, [110/201], 11:57:24, ospf-11, nssa type-1
+10.10.0.0/24, ubest/mbest: 1/0
+    *via 10.2.2.5, Eth1/4, [110/200], 12:36:40, ospf-11, type-1
+192.168.88.0/24, ubest/mbest: 1/0
+    *via 10.2.2.3, Eth1/3, [110/99], 11:41:01, ospf-11, nssa type-2, tag 100
+
+S-1-2#

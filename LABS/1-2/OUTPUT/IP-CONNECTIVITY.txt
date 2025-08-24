@@ -1,0 +1,161 @@
+L-1-1# sh ip route 10.0.1.1
+...
+10.0.1.1/32, ubest/mbest: 2/0
+    *via 10.2.1.0, Eth1/2, [110/201], 13:43:19, ospf-11, inter
+    *via 10.2.2.0, Eth1/3, [110/201], 13:43:24, ospf-11, inter
+L-1-1#
+L-1-1# traceroute 10.0.1.1
+traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 40 byte packets
+ 1  10.2.2.0 (10.2.2.0)  7.447 ms  5.288 ms  3.817 ms
+ 2  10.0.1.1 (10.0.1.1)  8.882 ms  8.379 ms  8.043 ms
+L-1-1#
+
+L-1-1(config)# int ethernet 1/3
+L-1-1(config-if)# shut
+L-1-1(config-if)# do sh ip route 10.0.1.1
+...
+10.0.1.1/32, ubest/mbest: 1/0
+    *via 10.2.1.0, Eth1/2, [110/201], 13:48:58, ospf-11, inter
+
+L-1-1(config-if)# do traceroute 10.0.1.1
+traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 40 byte packets
+ 1  10.2.1.0 (10.2.1.0)  21.64 ms  4.941 ms  3.26 ms
+ 2  10.0.1.1 (10.0.1.1)  13.236 ms  8.432 ms  11.014 ms
+
+L-1-1(config-if)# no shut
+L-1-1(config-if)# do sh ip route 10.0.1.1
+...
+10.0.1.1/32, ubest/mbest: 2/0
+    *via 10.2.1.0, Eth1/2, [110/201], 13:49:53, ospf-11, inter
+    *via 10.2.2.0, Eth1/3, [110/201], 00:00:12, ospf-11, inter
+L-1-1(config-if)#
+L-1-1(config-if)# do traceroute 10.0.1.1
+traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 40 byte packets
+ 1  10.2.1.0 (10.2.1.0)  5.765 ms  4.065 ms  4.184 ms
+ 2  10.0.1.1 (10.0.1.1)  11.832 ms  8.774 ms  7.976 ms
+
+################# from VPC-1-2 ###########################
+VPCS> ip 10.9.0.100/24 10.9.0.1
+Checking for duplicate address...
+VPCS : 10.9.0.100 255.255.255.0 gateway 10.9.0.1
+
+VPCS> ping 10.0.1.1
+
+10.0.1.1 icmp_seq=1 timeout
+84 bytes from 10.0.1.1 icmp_seq=2 ttl=253 time=31.708 ms
+84 bytes from 10.0.1.1 icmp_seq=3 ttl=253 time=21.355 ms
+84 bytes from 10.0.1.1 icmp_seq=4 ttl=253 time=24.645 ms
+84 bytes from 10.0.1.1 icmp_seq=5 ttl=253 time=12.773 ms
+
+VPCS> ping 10.0.2.1
+
+10.0.2.1 icmp_seq=1 timeout
+10.0.2.1 icmp_seq=2 timeout
+84 bytes from 10.0.2.1 icmp_seq=3 ttl=253 time=47.127 ms
+84 bytes from 10.0.2.1 icmp_seq=4 ttl=253 time=139.403 ms
+84 bytes from 10.0.2.1 icmp_seq=5 ttl=253 time=15.470 ms
+
+VPCS> ping 10.0.0.11
+
+84 bytes from 10.0.0.11 icmp_seq=1 ttl=253 time=54.378 ms
+84 bytes from 10.0.0.11 icmp_seq=2 ttl=253 time=22.207 ms
+84 bytes from 10.0.0.11 icmp_seq=3 ttl=253 time=14.047 ms
+84 bytes from 10.0.0.11 icmp_seq=4 ttl=253 time=22.683 ms
+84 bytes from 10.0.0.11 icmp_seq=5 ttl=253 time=16.046 ms
+
+VPCS> ping 10.0.0.12
+
+84 bytes from 10.0.0.12 icmp_seq=1 ttl=255 time=12.243 ms
+84 bytes from 10.0.0.12 icmp_seq=2 ttl=255 time=5.063 ms
+84 bytes from 10.0.0.12 icmp_seq=3 ttl=255 time=7.094 ms
+84 bytes from 10.0.0.12 icmp_seq=4 ttl=255 time=3.498 ms
+84 bytes from 10.0.0.12 icmp_seq=5 ttl=255 time=2.528 ms
+
+VPCS> ping 10.0.0.13
+
+84 bytes from 10.0.0.13 icmp_seq=1 ttl=253 time=43.621 ms
+84 bytes from 10.0.0.13 icmp_seq=2 ttl=253 time=15.177 ms
+84 bytes from 10.0.0.13 icmp_seq=3 ttl=253 time=15.386 ms
+84 bytes from 10.0.0.13 icmp_seq=4 ttl=253 time=12.468 ms
+84 bytes from 10.0.0.13 icmp_seq=5 ttl=253 time=31.046 ms
+
+VPCS> ping 10.8.0.1
+
+84 bytes from 10.8.0.1 icmp_seq=1 ttl=253 time=18.217 ms
+84 bytes from 10.8.0.1 icmp_seq=2 ttl=253 time=18.104 ms
+84 bytes from 10.8.0.1 icmp_seq=3 ttl=253 time=355.007 ms
+84 bytes from 10.8.0.1 icmp_seq=4 ttl=253 time=14.595 ms
+84 bytes from 10.8.0.1 icmp_seq=5 ttl=253 time=17.504 ms
+
+VPCS> ping 10.9.0.1
+
+84 bytes from 10.9.0.1 icmp_seq=1 ttl=255 time=5.805 ms
+84 bytes from 10.9.0.1 icmp_seq=2 ttl=255 time=4.568 ms
+84 bytes from 10.9.0.1 icmp_seq=3 ttl=255 time=7.596 ms
+84 bytes from 10.9.0.1 icmp_seq=4 ttl=255 time=6.301 ms
+84 bytes from 10.9.0.1 icmp_seq=5 ttl=255 time=6.405 ms
+
+VPCS> ping 10.10.0.1
+
+84 bytes from 10.10.0.1 icmp_seq=1 ttl=253 time=71.950 ms
+84 bytes from 10.10.0.1 icmp_seq=2 ttl=253 time=19.056 ms
+84 bytes from 10.10.0.1 icmp_seq=3 ttl=253 time=28.922 ms
+84 bytes from 10.10.0.1 icmp_seq=4 ttl=253 time=83.770 ms
+84 bytes from 10.10.0.1 icmp_seq=5 ttl=253 time=15.243 ms
+
+VPCS>
+
+%%%%%%%%%%%%%%%%%%%%%%% VPC-1-3 %%%%%%%%%%%%%%%%%
+VPCS> ip 10.10.0.100/24 10.10.0.1
+Checking for duplicate address...
+VPCS : 10.10.0.100 255.255.255.0 gateway 10.10.0.1
+
+VPCS> ping 10.0.1.1
+
+10.0.1.1 icmp_seq=1 timeout
+84 bytes from 10.0.1.1 icmp_seq=2 ttl=253 time=15.449 ms
+84 bytes from 10.0.1.1 icmp_seq=3 ttl=253 time=22.026 ms
+84 bytes from 10.0.1.1 icmp_seq=4 ttl=253 time=19.399 ms
+84 bytes from 10.0.1.1 icmp_seq=5 ttl=253 time=15.768 ms
+
+VPCS> ping 10.0.2.1
+
+84 bytes from 10.0.2.1 icmp_seq=1 ttl=253 time=17.656 ms
+84 bytes from 10.0.2.1 icmp_seq=2 ttl=253 time=11.591 ms
+84 bytes from 10.0.2.1 icmp_seq=3 ttl=253 time=16.772 ms
+84 bytes from 10.0.2.1 icmp_seq=4 ttl=253 time=16.623 ms
+84 bytes from 10.0.2.1 icmp_seq=5 ttl=253 time=22.371 ms
+
+VPCS> trace 10.0.1.1
+trace to 10.0.1.1, 8 hops max, press Ctrl+C to stop
+ 1   10.10.0.1   5.274 ms  4.044 ms  4.747 ms
+ 2   10.2.1.4   14.715 ms  9.925 ms  8.930 ms
+ 3     *  *  *
+ 4     *  *  *
+^C 
+
+VPCS> trace 10.0.1.1
+trace to 10.0.1.1, 8 hops max, press Ctrl+C to stop
+ 1   10.10.0.1   8.320 ms  1.841 ms  1.689 ms
+ 2   10.2.1.4   6.240 ms  6.415 ms  5.800 ms
+ 3     *  *  *
+ 4     *  *  *
+^C 
+VPCS> ping 10.8.0.1
+
+84 bytes from 10.8.0.1 icmp_seq=1 ttl=253 time=34.232 ms
+84 bytes from 10.8.0.1 icmp_seq=2 ttl=253 time=20.125 ms
+84 bytes from 10.8.0.1 icmp_seq=3 ttl=253 time=15.532 ms
+84 bytes from 10.8.0.1 icmp_seq=4 ttl=253 time=23.079 ms
+84 bytes from 10.8.0.1 icmp_seq=5 ttl=253 time=21.047 ms
+
+VPCS> ping 10.9.0.1
+
+84 bytes from 10.9.0.1 icmp_seq=1 ttl=253 time=30.820 ms
+84 bytes from 10.9.0.1 icmp_seq=2 ttl=253 time=21.011 ms
+84 bytes from 10.9.0.1 icmp_seq=3 ttl=253 time=11.026 ms
+84 bytes from 10.9.0.1 icmp_seq=4 ttl=253 time=16.895 ms
+84 bytes from 10.9.0.1 icmp_seq=5 ttl=253 time=9.439 ms
+
+VPCS>
+

@@ -1,0 +1,139 @@
+SS-2# term length 0
+SS-2# show ip ospf neighbor
+ OSPF Process ID 11 VRF default
+ Total number of neighbors: 2
+ Neighbor ID     Pri State            Up Time  Address         Interface
+ 10.0.11.1         1 FULL/ -          22:40:37 10.0.11.1       Eth1/2
+ 10.0.12.1         1 FULL/ -          22:40:20 10.0.12.1       Eth1/3
+SS-2# show ip ospf database
+        OSPF Router with ID (10.0.2.1) (Process ID 11 VRF default)
+
+                Router Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age        Seq#       Checksum Link Count
+10.0.1.1        10.0.1.1        691        0x80000097 0x8cf5   3
+10.0.2.1        10.0.2.1        1499       0x80000030 0xd410   3
+10.0.11.1       10.0.11.1       1759       0x80000093 0x690f   3
+10.0.12.1       10.0.12.1       1761       0x8000007e 0xc8c0   3
+
+                Summary Network Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+10.0.0.11       10.0.11.1       1749       0x80000019 0x9222
+10.0.0.11       10.0.12.1       1751       0x80000019 0x8b28
+10.0.0.12       10.0.11.1       1018       0x80000019 0x882b
+10.0.0.12       10.0.12.1       1011       0x80000019 0x8131
+10.0.0.13       10.0.11.1       908        0x80000025 0x6640
+10.0.0.13       10.0.12.1       900        0x80000025 0x5f46
+10.2.1.0        10.0.11.1       146        0x80000027 0xb1fe
+10.2.1.0        10.0.12.1       1751       0x80000019 0xb2a6
+10.2.1.2        10.0.11.1       1589       0x80000025 0xa10f
+10.2.1.2        10.0.12.1       1011       0x80000019 0x9eb8
+10.2.1.4        10.0.11.1       1579       0x80000025 0x8d21
+10.2.1.4        10.0.12.1       900        0x80000025 0x72d6
+10.2.2.0        10.0.11.1       1749       0x80000019 0xaeaa
+10.2.2.0        10.0.12.1       560        0x80000028 0x9d10
+10.2.2.2        10.0.11.1       1018       0x80000019 0x9abc
+10.2.2.2        10.0.12.1       1561       0x80000025 0x8f1f
+10.2.2.4        10.0.11.1       907        0x80000025 0x6eda
+10.2.2.4        10.0.12.1       1551       0x80000025 0x7b31
+
+                Summary ASBR Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age        Seq#       Checksum
+10.0.0.13       10.0.11.1       1538       0x8000001a 0x644d
+10.0.0.13       10.0.12.1       1541       0x8000001a 0x5d53
+10.0.11.1       10.0.12.1       1751       0x80000019 0x4a04
+10.0.12.1       10.0.11.1       1769       0x80000019 0x4608
+
+                Type-5 AS External Link States
+
+Link ID         ADV Router      Age        Seq#       Checksum Tag
+10.8.0.0        10.0.12.1       1751       0x80000018 0x8e0b    0
+10.9.0.0        10.0.12.1       1011       0x80000018 0x9007    0
+10.10.0.0       10.0.0.13       1538       0x8000001a 0x7535    0
+192.168.88.0    10.0.12.1       20         0x80000018 0x8a7a    100
+
+SS-2# show ip ospf interface
+ Ethernet1/2 is up, line protocol is up
+    Unnumbered interface using IP address of loopback1 (10.0.2.1)
+    Process ID 11 VRF default, area 0.0.0.0
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 2, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:04
+    Message-digest authentication, using key id 1
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 1
+ Ethernet1/3 is up, line protocol is up
+    Unnumbered interface using IP address of loopback1 (10.0.2.1)
+    Process ID 11 VRF default, area 0.0.0.0
+    Enabled by interface configuration
+    State P2P, Network type P2P, cost 100
+    Index 3, Transmit delay 1 sec
+    1 Neighbors, flooding to 1, adjacent with 1
+    Timer intervals: Hello 10, Dead 40, Wait 40, Retransmit 5
+      Hello timer due in 00:00:07
+    Message-digest authentication, using key id 1
+    Number of opaque link LSAs: 0, checksum sum 0
+    Interface ospf state change count: 1
+ loopback1 is up, line protocol is up
+    IP address 10.0.2.1/32
+    Process ID 11 VRF default, area 0.0.0.0
+    Enabled by interface configuration
+    State LOOPBACK, Network type LOOPBACK, cost 1
+    Index 1
+SS-2# show ip route
+IP Route Table for VRF "default"
+'*' denotes best ucast next-hop
+'**' denotes best mcast next-hop
+'[x/y]' denotes [preference/metric]
+'%<string>' in via output denotes VRF <string>
+
+10.0.0.11/32, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/201], 12:07:06, ospf-11, inter
+    *via 10.0.12.1, Eth1/3, [110/201], 12:07:14, ospf-11, inter
+10.0.0.12/32, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/201], 11:55:03, ospf-11, inter
+    *via 10.0.12.1, Eth1/3, [110/201], 11:54:46, ospf-11, inter
+10.0.0.13/32, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/201], 17:57:25, ospf-11, inter
+    *via 10.0.12.1, Eth1/3, [110/201], 17:57:18, ospf-11, inter
+10.0.1.1/32, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/201], 22:40:31, ospf-11, intra
+    *via 10.0.12.1, Eth1/3, [110/201], 22:40:20, ospf-11, intra
+10.0.2.1/32, ubest/mbest: 2/0, attached
+    *via 10.0.2.1, Lo1, [0/0], 22:42:46, local
+    *via 10.0.2.1, Lo1, [0/0], 22:42:46, direct
+10.0.11.1/32, ubest/mbest: 1/0
+    *via 10.0.11.1, Eth1/2, [110/101], 22:40:31, ospf-11, intra
+10.0.12.1/32, ubest/mbest: 1/0
+    *via 10.0.12.1, Eth1/3, [110/101], 22:40:20, ospf-11, intra
+10.2.1.0/31, ubest/mbest: 1/0
+    *via 10.0.11.1, Eth1/2, [110/200], 18:45:21, ospf-11, inter
+10.2.1.2/31, ubest/mbest: 1/0
+    *via 10.0.11.1, Eth1/2, [110/200], 18:08:46, ospf-11, inter
+10.2.1.4/31, ubest/mbest: 1/0
+    *via 10.0.11.1, Eth1/2, [110/200], 18:08:34, ospf-11, inter
+10.2.2.0/31, ubest/mbest: 1/0
+    *via 10.0.12.1, Eth1/3, [110/200], 12:17:37, ospf-11, inter
+10.2.2.2/31, ubest/mbest: 1/0
+    *via 10.0.12.1, Eth1/3, [110/200], 18:08:11, ospf-11, inter
+10.2.2.4/31, ubest/mbest: 1/0
+    *via 10.0.12.1, Eth1/3, [110/200], 18:08:00, ospf-11, inter
+10.8.0.0/24, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/301], 12:07:06, ospf-11, type-1
+    *via 10.0.12.1, Eth1/3, [110/301], 12:07:14, ospf-11, type-1
+10.9.0.0/24, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/301], 11:54:46, ospf-11, type-1
+    *via 10.0.12.1, Eth1/3, [110/301], 11:54:46, ospf-11, type-1
+10.10.0.0/24, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/300], 12:34:02, ospf-11, type-1
+    *via 10.0.12.1, Eth1/3, [110/300], 12:34:02, ospf-11, type-1
+192.168.88.0/24, ubest/mbest: 2/0
+    *via 10.0.11.1, Eth1/2, [110/99], 11:38:24, ospf-11, type-2, tag 100
+    *via 10.0.12.1, Eth1/3, [110/99], 11:38:24, ospf-11, type-2, tag 100
+
+SS-2#
