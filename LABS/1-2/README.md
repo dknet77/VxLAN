@@ -33,6 +33,10 @@ S-1-1, S-1-2 - ABR Routers, осуществляют взаимодействи�
 
 
 ## Дополнительно:
+[Проверка доступности узлов:](https://github.com/dknet77/VxLAN/blob/main/LABS/1-2/OUTPUT/IP-CONNECTIVITY.txt)
+
+[Вывод команд: show ip route & sh ip ospf neighbor/database/interface](https://github.com/dknet77/VxLAN/tree/main/LABS/1-2/OUTPUT)
+
 Настройки для каждого роутера приведены здесь: [CONFIGS](https://github.com/dknet77/VxLAN/tree/main/LABS/1-2/CONFIGS)
 
 Отработал сценарий вывода трафика с роутера, для последующих работ: [MAINTENANCE](https://github.com/dknet77/VxLAN/blob/main/LABS/1-2/APPENDIX/MAINTENANCE.txt)
