@@ -15,11 +15,11 @@
 ![3-1-5.png](3-1-5.png)
 
 ### IPV6 part
-fc00::/7 — Unique Local Addresses (ULA) — Локальные адреса
+`fc00::/7` — Unique Local Addresses (ULA) — Локальные адреса
 
 Пример: fd12:3456:789a::1/64 (где 12:3456:789a — ваш случайный Global ID).
 
-prefix+L-bit(8bits):global-id(40bits):subnet-id(16bits)::interface id(64bits)
+`prefix+L-bit(8bits):global-id(40bits):subnet-id(16bits)::interface id(64bits)`
 
 Префикс (7 бит): Всегда 1111110 в двоичном виде, что в шестнадцатеричном представляет собой fc или fd.
 
