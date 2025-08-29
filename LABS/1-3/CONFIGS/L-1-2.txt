@@ -1,0 +1,255 @@
+
+
+!Command: show running-config
+!Running configuration last done at: Thu Aug 28 20:46:32 2025
+!Time: Thu Aug 28 20:46:33 2025
+
+version 9.3(8) Bios:version  
+hostname L-1-2
+vdc L-1-2 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature ospf
+feature isis
+feature interface-vlan
+
+no password strength-check
+username admin password 5 $5$ANNMPA$oJ5He3d0yzAFE9kVdaive2wnPhzqx2BVBghw/IR7h63  role network-admin
+no ip domain-lookup
+copp profile strict
+snmp-server user admin network-admin auth md5 482F54FEE3AB4C2B85FC97527F49CBEEBAF4 priv 006579DD93CF7D1A90FFDA5A7810B3FAA7A9 localizedV2key
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+
+ip route 192.168.88.0/24 Null0 tag 100
+vlan 1,9,881
+vlan 9
+  name VPC
+vlan 881
+  name test
+
+ip prefix-list ALLOWED-CONNECTED-NETS seq 5 permit 10.9.0.0/24 
+ip prefix-list ISIS-CONNECTED seq 10 permit 10.9.0.0/24 
+route-map CONNECTED-TO-OSPF permit 10
+  match ip address prefix-list ALLOWED-CONNECTED-NETS 
+  set metric 100 
+  set metric-type type-1
+route-map ISIS-CONNECTED permit 10
+  match ip address prefix-list ISIS-CONNECTED 
+route-map STATIC-TO-OSPF permit 10
+  match tag 100 
+  set metric 99 
+  set metric-type type-2
+key chain MY-CHAIN
+  key 1
+    key-string 7 072218017e282a36203d3928
+    accept-lifetime 00:00:00 Aug 01 2025  infinite
+    send-lifetime 00:00:00 Aug 01 2025  infinite
+    cryptographic-algorithm HMAC-SHA-256
+vrf context management
+
+
+interface Vlan1
+
+interface Vlan9
+  no shutdown
+  ip address 10.9.0.1/24
+
+interface Vlan881
+  ip address 192.168.88.1/30
+
+interface Ethernet1/1
+
+interface Ethernet1/2
+  description *** LINK TO S-1-1 ***
+  no switchport
+  ip address 10.2.1.3/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:3/127
+  ipv6 link-local fe80::ffff:dddd:1:3
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+
+interface Ethernet1/3
+  description *** LINK TO S-1-2 ***
+  no switchport
+  ip address 10.2.2.3/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:9/127
+  ipv6 link-local fe80::ffff:dddd:1:9
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN level-1
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+
+interface Ethernet1/4
+  description *** LINK TO VPC ***
+  switchport access vlan 9
+
+interface Ethernet1/5
+
+interface Ethernet1/6
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface Ethernet1/55
+
+interface Ethernet1/56
+
+interface Ethernet1/57
+
+interface Ethernet1/58
+
+interface Ethernet1/59
+
+interface Ethernet1/60
+
+interface Ethernet1/61
+
+interface Ethernet1/62
+
+interface Ethernet1/63
+
+interface Ethernet1/64
+
+interface mgmt0
+  vrf member management
+
+interface loopback1
+  ip address 10.0.0.12/32
+  ipv6 address fd12:3456:789a::bb:12/128
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+icam monitor scale
+
+line console
+line vty
+boot nxos bootflash:/nxos.9.3.8.bin sup-1
+router isis UNDERLAY
+  net 49.8121.0812.0001.2002.00
+  reference-bandwidth 100 Gbps
+  address-family ipv4 unicast
+    redistribute direct route-map ISIS-CONNECTED
+    router-id 10.0.0.12
+  address-family ipv6 unicast
+  passive-interface default level-1-2
+
+
+!
+
+
+!end
+!end

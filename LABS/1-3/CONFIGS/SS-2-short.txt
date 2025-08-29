@@ -1,0 +1,67 @@
+hostname SS-2
+feature isis
+!
+ip route 10.8.0.0/24 10.2.3.5
+ip route 10.8.0.0/24 10.2.3.7
+ip route 10.9.0.0/24 10.2.3.5
+ip route 10.9.0.0/24 10.2.3.7
+ip route 10.10.0.0/24 10.2.3.5
+ip route 10.10.0.0/24 10.2.3.7
+!
+key chain MY-CHAIN
+  key 1
+    key-string 7 072218017e282a36203d3928
+    accept-lifetime 00:00:00 Aug 01 2025  infinite
+    send-lifetime 00:00:00 Aug 01 2025  infinite
+    cryptographic-algorithm HMAC-SHA-256
+!
+interface Ethernet1/2
+  description *** LINK TO S-1-1 ***
+  no switchport
+  medium p2p
+  ip address 10.2.3.4/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:10/127
+  ipv6 link-local fe80::ffff:dddd:1:10
+  isis network point-to-point
+  isis circuit-type level-2
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN level-2
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
+  no ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/3
+  description *** LINK TO S-1-2 ***
+  no switchport
+  medium p2p
+  ip address 10.2.3.6/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:12/127
+  ipv6 link-local fe80::ffff:dddd:1:12
+  isis network point-to-point
+  isis circuit-type level-2
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN level-2
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
+  no ip ospf passive-interface
+  no shutdown
+!
+interface loopback1
+  ip address 10.0.2.1/32
+  ipv6 address fd12:3456:789a::a:2/128
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
+!
+router isis UNDERLAY
+  net 49.7777.0812.0001.0002.00
+  is-type level-2
+  reference-bandwidth 100 Gbps
+  address-family ipv4 unicast
+    router-id 10.0.2.1
+  address-family ipv6 unicast
+  passive-interface default level-1-2
+

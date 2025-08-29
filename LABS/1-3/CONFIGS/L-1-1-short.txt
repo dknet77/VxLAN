@@ -1,0 +1,73 @@
+hostname L-1-1
+!
+feature isis
+!
+ipv6 prefix-list ISIS-CONNECTED-IPV6 seq 10 permit
+ip prefix-list ISIS-CONNECTED seq 10 permit 10.8.0.0/24 
+!
+route-map ISIS-CONNECTED permit 10
+  match ip address prefix-list ISIS-CONNECTED 
+!
+route-map ISIS-CONNECTED-IPV6 permit 10
+  match ipv6 address prefix-list ISIS-CONNECTED-IPV6
+!  
+key chain MY-CHAIN
+  key 1
+    key-string 7 072218017e282a36203d3928
+    accept-lifetime 00:00:00 Aug 01 2025  infinite
+    send-lifetime 00:00:00 Aug 01 2025  infinite
+    cryptographic-algorithm HMAC-SHA-256
+!
+interface Ethernet1/2
+  description *** LINK TO S-1-1 ***
+  no switchport
+  ip address 10.2.1.1/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:1/127
+  ipv6 link-local fe80::ffff:dddd:1:1
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/3
+  description *** LINK TO S-1-2 ***
+  no switchport
+  ip address 10.2.2.1/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:7/127
+  ipv6 link-local fe80::ffff:dddd:1:7
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/4
+  description *** LINK TO VPC ***
+  no switchport
+  ip address 10.8.0.1/24
+  no shutdown
+!
+interface loopback1
+  ip address 10.0.0.11/32
+  ipv6 address fd12:3456:789a::bb:11/128
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+!
+router isis UNDERLAY
+  net 49.8121.0812.0001.2001.00
+  reference-bandwidth 100 Gbps
+  address-family ipv4 unicast
+    redistribute direct route-map ISIS-CONNECTED
+    router-id 10.0.0.11
+  address-family ipv6 unicast
+    redistribute direct route-map ISIS-CONNECTED-IPV6
+  passive-interface default level-1-2

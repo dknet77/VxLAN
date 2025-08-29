@@ -1,0 +1,107 @@
+hostname S-1-1
+!
+feature isis
+!
+key chain MY-CHAIN
+  key 1
+    key-string 7 072218017e282a36203d3928
+    accept-lifetime 00:00:00 Aug 01 2025  infinite
+    send-lifetime 00:00:00 Aug 01 2025  infinite
+    cryptographic-algorithm HMAC-SHA-256
+!
+interface Ethernet1/2
+  description *** LINK TO L-1-1 ***
+  no switchport
+  ip address 10.2.1.0/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:0/127
+  ipv6 link-local fe80::ffff:dddd:1:0
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/3
+  description *** LINK TO L-1-2 ***
+  no switchport
+  ip address 10.2.1.2/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:2/127
+  ipv6 link-local fe80::ffff:dddd:1:2
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/4
+  description *** LINK TO L-1-3 ***
+  no switchport
+  ip address 10.2.1.4/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:4/127
+  ipv6 link-local fe80::ffff:dddd:1:4
+  isis network point-to-point
+  isis circuit-type level-1
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1
+  no ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/5
+  description *** LINK TO SS-1 ***
+  no switchport
+  medium p2p
+  ip address 10.2.3.1/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:d/127
+  ipv6 link-local fe80::ffff:dddd:1:d
+  isis network point-to-point
+  isis circuit-type level-2
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
+  ip ospf passive-interface
+  no shutdown
+!
+interface Ethernet1/6
+  description *** LINK TO SS-2 ***
+  no switchport
+  medium p2p
+  ip address 10.2.3.5/31
+  ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:11/127
+  ipv6 link-local fe80::ffff:dddd:1:11
+  isis network point-to-point
+  isis circuit-type level-2
+  isis authentication-type md5
+  isis authentication key-chain MY-CHAIN
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
+  no ip ospf passive-interface
+  no shutdown
+!
+interface loopback1
+  ip address 10.0.11.1/32
+  ipv6 address fd12:3456:789a::aa:11/128
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-1-2
+!
+router isis UNDERLAY
+  net 49.8121.0812.0001.1001.00
+  reference-bandwidth 100 Gbps
+  address-family ipv4 unicast
+    router-id 10.0.11.1
+  address-family ipv6 unicast
+  passive-interface default level-1-2
