@@ -17,7 +17,9 @@
 ## Описание:
 
 NET:
+
 ![3-1-6.png](3-1-6.png)
+
 На каждом роутере изменил reference-bandwidth на 100Gb/s и authentication (MD5/SHA-256).
 
 SS-1 и SS-2 - Backbone Routers.  Через эти роутеры будем стыковать POD1 с другим датацентром POD2.
