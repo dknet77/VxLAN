@@ -55,7 +55,7 @@ fd12:3456:789a:ffff::/64 - PtPs
 LLA: fe80::ffff:dddd:0001:0/128
 
 
-## NET (Network Entity Title)
+## IS-IS   NET (Network Entity Title)
 
   `AFI.AREA-ID.SYS-ID.SEL`
 
