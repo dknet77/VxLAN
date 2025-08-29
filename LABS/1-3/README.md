@@ -90,7 +90,7 @@ SYS-ID - можно исползовать разные подходы.
 
 SS1, SS2 - Super Spine с отдельной AS7777 и это роутеры только Level-2.
 
-Общая идея такая:
+#### Конфигурация Super-Spine роутеров (SS-1, SS-2):
 
     interface EthernetX/Y
 		description *** LINK TO S-1-2 ***
@@ -128,13 +128,13 @@ Loopback1(IPv4, IPv6) не будет известен на роутерах L-1
 
 Такой дизайн протокола, своего рода изоляция.  При необходимости это можно исправить (путем distribution/redistribution).
 
-ABR (S-1-1, S-1-2) являются роутерами Level-1/Level-2.  
+ABR (S-1-1, S-1-2) являются роутерами Level-1/Level-2.  ABR (Spine) роутеры и Leaf роутеры находятся в отдельной AS-NUM: 8121 
 
-Они генерирут ATT-bit и стимулируют L-1-1, L-1-2, L-1-3 создать 0.0.0.0/0 с next-hop (ABR-router).
+ABR-routers генерирут ATT-bit и стимулируют L-1-1, L-1-2, L-1-3 создать 0.0.0.0/0 с next-hop (ABR-router).
 
 В результате L2 локальные префиксы ABR будут доступны c L1-only роутеров.
 
-Конфиг на ABR выглядит так:
+#### Конфиг на ABR выглядит так:
 
 	interface EthernetX/Y
 		description *** LINK TO L-1-1 ***
@@ -182,7 +182,7 @@ ABR (S-1-1, S-1-2) являются роутерами Level-1/Level-2.
 		address-family ipv6 unicast
 		passive-interface default level-1-2
 		
-На LEAF роутерах (L1-only) конфиг выглядит так:
+#### На LEAF роутерах (L1-only) конфиг выглядит так:
 
 	ipv6 prefix-list ISIS-CONNECTED-IPV6 seq 10 permit
 	ip prefix-list ISIS-CONNECTED seq 10 permit 10.8.0.0/24 
