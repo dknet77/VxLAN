@@ -231,7 +231,7 @@ ABR-routers генерирут ATT-bit и стимулируют L-1-1, L-1-2, L
 ## Дополнительно:
 [Проверка доступности узлов](https://github.com/dknet77/VxLAN/blob/main/LABS/1-3/OUTPUT/IP-CONNECTIVITY.txt)
 
-[Вывод команд: SHOW ](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/OUTPUT)
+[Вывод show-команд](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/OUTPUT)
 
 Настройки для каждого роутера приведены здесь: [CONFIGS](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/CONFIGS)
 
