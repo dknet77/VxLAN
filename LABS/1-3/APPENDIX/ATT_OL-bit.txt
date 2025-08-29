@@ -1,0 +1,89 @@
+%%%%%%%%%%%%%% OL-bit %%%%%%%%%%%%%%%%%%%%%%
+
+При необходимости вывести роутер из пути трафика для выполнения плановых работ.
+
+L-1-1# sh ip route 10.0.0.12/32 isis-UNDERLAY
+10.0.0.12/32, ubest/mbest: 2/0
+    *via 10.2.1.0, Eth1/2, [115/201], 02:07:38, isis-UNDERLAY, L1
+    *via 10.2.2.0, Eth1/3, [115/201], 00:00:06, isis-UNDERLAY, L1
+L-1-1#
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+S-1-2(config-router)# set-overload-bit always
+S-1-2(config-router)#
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+L-1-1# sh ip route 10.0.0.12/32 isis-UNDERLAY
+10.0.0.12/32, ubest/mbest: 1/0
+    *via 10.2.1.0, Eth1/2, [115/201], 02:06:39, isis-UNDERLAY, L1
+L-1-1#
+
+
+%%%%%%%%%%%%%% ATT-bit %%%%%%%%%%%%%%%%%%%%%%
+
+После получения ATT-bit от L2/L1-router, (by default) L1-only router добавит в свою GRT 0.0.0.0/0 до L2/L1 router.
+
+Once a level 1-2 router is connected to another area, it will set a special bit in its level 1 LSP called the attached bit. 
+When a level 1 router sees this, it will generate a default route that is pointed to the level 1-2 router. 
+
+L-1-1# sh ip route 0.0.0.0
+0.0.0.0/0, ubest/mbest: 2/0
+    *via 10.2.1.0, Eth1/2, [115/100], 01:48:33, isis-UNDERLAY, L1
+    *via 10.2.2.0, Eth1/3, [115/100], 00:00:13, isis-UNDERLAY, L1
+L-1-1#
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+S-1-2(config-router)# no set-attached-bit
+S-1-2(config-router)#
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+L-1-1# sh ip route 0.0.0.0
+0.0.0.0/0, ubest/mbest: 1/0
+    *via 10.2.1.0, Eth1/2, [115/100], 02:01:43, isis-UNDERLAY, L1
+L-1-1#
+
+%%%%%%%%%%%%%%%%%%% Distribution from L2 to L1 %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+SS-1&SS-2 - только L2 роутеры.
+их loopback-интерфейсы видны на S-1-1&S-1-2 (L2/L1),
+но уже не видны на роутерах Leaf-роутерах (L1 only).
+доступность обеспечивают 0.0.0.0/0 которые активирует каждый L1-only роутер, после получения ATT-bit от L1/L2 роутера.
+
+L-1-1# sh ip route 10.0.1.1
+0.0.0.0/0, ubest/mbest: 2/0
+    *via 10.2.1.0, Eth1/2, [115/100], 00:04:54, isis-UNDERLAY, L1
+    *via 10.2.2.0, Eth1/3, [115/100], 00:05:05, isis-UNDERLAY, L1
+L-1-1# sh ip route 10.0.2.1
+0.0.0.0/0, ubest/mbest: 2/0
+    *via 10.2.1.0, Eth1/2, [115/100], 00:05:15, isis-UNDERLAY, L1
+    *via 10.2.2.0, Eth1/3, [115/100], 00:05:26, isis-UNDERLAY, L1
+L-1-1#
+( By default, no prefixes from L2 LSDB (backbone) are imported to L1 LSDB )
+
+
+Можно настросить redistribution L2 prefixes to L1.
+
+S-1-2#
+
+ip prefix-list ISIS_L2-TO-L1 seq 5 permit 10.0.1.1/32
+ip prefix-list ISIS_L2-TO-L1 seq 10 permit 10.0.2.1/32
+!
+route-map ISIS_L2-TO-L1 permit 10
+  match ip address prefix-list ISIS_L2-TO-L1
+!
+router isis UNDERLAY
+  address-family ipv4 unicast
+    distribute level-2 into level-1 route-map ISIS_L2-TO-L1
+
+
+В результате стали видны префиксы на L1-routers.
+
+L-1-1# sh ip route 10.0.2.1
+10.0.2.1/32, ubest/mbest: 1/0
+    *via 10.2.2.0, Eth1/3, [115/201], 00:00:18, isis-UNDERLAY, L1
+
+L-1-1# sh ip route 10.0.1.1
+10.0.1.1/32, ubest/mbest: 1/0
+    *via 10.2.2.0, Eth1/3, [115/201], 00:00:28, isis-UNDERLAY, L1
+L-1-1#
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+S-1-2# sh isis database l2 detail router-id  10.0.2.1

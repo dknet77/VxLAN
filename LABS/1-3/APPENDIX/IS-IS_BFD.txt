@@ -1,0 +1,8 @@
+feature bfd
+!
+int ether1/2
+isis bfd
+bfd ipv4 interval 100 min_rx 100 multiplier 3
+no ip redirects 
+no ipv6 redirects
+!
