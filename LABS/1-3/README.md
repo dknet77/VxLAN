@@ -53,6 +53,6 @@ L-1-1/L-1-2/L-1-3 являются ASBR, так как выполняют ред
 
 Настройки для каждого роутера приведены здесь: [CONFIGS](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/CONFIGS)
 
-ATT-BIT and OL-BIT: [MAINTENANCE](https://github.com/dknet77/VxLAN/blob/main/LABS/1-3/APPENDIX/ATT_OL-bit)
+Важная для понимания информация: [ATT-BIT and OL-BIT](https://github.com/dknet77/VxLAN/main/LABS/1-3/APPENDIX/ATT_OL-bit)
 
-На практике необходимо использование [BFD](https://github.com/dknet77/VxLAN/blob/main/LABS/1-3/APPENDIX/IS-IS_BFD)
+На практике необходимо использование [BFD](https://github.com/dknet77/VxLAN/main/LABS/1-3/APPENDIX/IS-IS_BFD)
