@@ -88,31 +88,143 @@ SYS-ID - можно исползовать разные подходы.
 
 ## Описание:
 
-На каждом роутере изменил reference-bandwidth на 100Gb/s и authentication (MD5/SHA-256).
+SS1, SS2 - Super Spine с отдельной AS7777 и это роутеры только Level-2.
 
-SS-1 и SS-2 - Backbone Routers.  Через эти роутеры будем стыковать POD1 с другим датацентром POD2.
-![1-2-5.png](1-2-5.png)
+Общая идея такая:
 
-S-1-1, S-1-2 - ABR Routers, осуществляют взаимодействие Backbone Area и NSSA, Totally NSSA, Standard Area.
- Разбитие на множество зон сделано для проработки практических навыков. 
- 
-![1-2-6.png](1-2-6.png)
+    interface EthernetX/Y
+		description *** LINK TO S-1-2 ***
+		no switchport
+		medium p2p
+		ip address 10.2.3.2/31
+		ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:e/127
+		ipv6 link-local fe80::ffff:dddd:1:e
+		isis network point-to-point
+		isis circuit-type level-2
+		isis authentication-type md5
+		isis authentication key-chain MY-CHAIN
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		no isis passive-interface level-2
+		no shutdown
 
-Тип сети на всех линках изменен на PtP (исключение LSA2). Для PtP линков между SS-1 & S-1-1/S-1-2 и SS-2 & S-1-1/S-1-2 используется unnumbred конфигурация.
+    router isis UNDERLAY
+		net 49.7777.0812.0001.0001.00
+		is-type level-2
+		reference-bandwidth 100 Gbps
+		address-family ipv4 unicast
+		router-id 10.0.1.1
+		address-family ipv6 unicast
+		passive-interface default level-1-2
+		
+	interface loopback1
+		ip address 10.0.1.1/32
+		ipv6 address fd12:3456:789a::a:1/128
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		no isis passive-interface level-2
+		
+Loopback1(IPv4, IPv6) не будет известен на роутерах L-1-1, L-1-2, L-1-3 (only Level-1) и сети Level-1 не известны роутерам SS-1, SS-2 (only Level-2).
 
-Для PtP линков между S-1-1 & L-1-1/L-1-2/L-1-3 и S-1-2 & L-1-1/L-1-2/L-1-3 используется конфигурация сетей /31.
+Такой дизайн протокола, своего рода изоляция.  При необходимости это можно исправить (путем distribution/redistribution).
 
+ABR (S-1-1, S-1-2) являются роутерами Level-1/Level-2.  
 
-![1-2-7.png](1-2-7.png)
+Они генерирут ATT-bit и стимулируют L-1-1, L-1-2, L-1-3 создать 0.0.0.0/0 с next-hop (ABR-router).
 
-L-1-1/L-1-2/L-1-3 являются ASBR, так как выполняют редистрибьюцию. По этой же причине нельзя использовать Stub Area/Totally Stub Area для них.
+В результате L2 локальные префиксы ABR будут доступны c L1-only роутеров.
 
-Зона типа: NSSA(+ def.route) находится на S-1-1/S-1-2 и L-1-1.  Использовал redistribution connected с помощью route-map.
+Конфиг на ABR выглядит так:
 
-Зона типа: Totally NSSA (+ def.route) находится на S-1-1/S-1-2 и L-1-2. Отработал исключение LSA3.  Использовал redistribution connected & static с помощью route-map.
+	interface EthernetX/Y
+		description *** LINK TO L-1-1 ***
+		no switchport
+		ip address 10.2.1.0/31
+		ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:0/127
+		ipv6 link-local fe80::ffff:dddd:1:0
+		isis network point-to-point
+		isis circuit-type level-1
+		isis authentication-type md5
+		isis authentication key-chain MY-CHAIN
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		no isis passive-interface level-1
+		no shutdown 
 
-Зона типа: Standard Area находится на S-1-1/S-1-2 и L-1-3.  Использовал redistribution connected с помощью route-map.
+	interface EthernetA/B
+		description *** LINK TO SS-1 ***
+		no switchport
+		medium p2p
+		ip address 10.2.3.1/31
+		ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:d/127
+		ipv6 link-local fe80::ffff:dddd:1:d
+		isis network point-to-point
+		isis circuit-type level-2
+		isis authentication-type md5
+		isis authentication key-chain MY-CHAIN
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		no isis passive-interface level-2
+		no shutdown
+		
+	interface loopback1
+		ip address 10.0.11.1/32
+		ipv6 address fd12:3456:789a::aa:11/128
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		no isis passive-interface level-1-2
+		
+	router isis UNDERLAY
+		net 49.8121.0812.0001.1001.00
+		reference-bandwidth 100 Gbps
+		address-family ipv4 unicast
+		router-id 10.0.11.1
+		address-family ipv6 unicast
+		passive-interface default level-1-2
+		
+На LEAF роутерах (L1-only) конфиг выглядит так:
 
+	ipv6 prefix-list ISIS-CONNECTED-IPV6 seq 10 permit
+	ip prefix-list ISIS-CONNECTED seq 10 permit 10.8.0.0/24 
+
+	route-map ISIS-CONNECTED permit 10
+		match ip address prefix-list ISIS-CONNECTED 
+
+	route-map ISIS-CONNECTED-IPV6 permit 10
+		match ipv6 address prefix-list ISIS-CONNECTED-IPV6
+		
+	interface EthernetX/Y
+		description *** LINK TO S-1-1 ***
+		no switchport
+		ip address 10.2.1.1/31
+		ipv6 address fd12:3456:789a:ffff:ffff:dddd:1:1/127
+		ipv6 link-local fe80::ffff:dddd:1:1
+		isis network point-to-point
+		isis circuit-type level-1
+		isis authentication-type md5
+		isis authentication key-chain MY-CHAIN
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		no isis passive-interface level-1
+		no shutdown
+		
+	interface loopback1
+		ip address 10.0.0.11/32
+		ipv6 address fd12:3456:789a::bb:11/128
+		ip router isis UNDERLAY
+		ipv6 router isis UNDERLAY
+		
+	router isis UNDERLAY
+		net 49.8121.0812.0001.2001.00
+		reference-bandwidth 100 Gbps
+			address-family ipv4 unicast
+				redistribute direct route-map ISIS-CONNECTED
+				router-id 10.0.0.11
+			address-family ipv6 unicast
+				redistribute direct route-map ISIS-CONNECTED-IPV6
+		passive-interface default level-1-2
+
+Важная для понимания информация: [ATT-BIT and OL-BIT](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/APPENDIX/ATT_OL-bit.txt)
 
 ## Дополнительно:
 [Проверка доступности узлов](https://github.com/dknet77/VxLAN/blob/main/LABS/1-3/OUTPUT/IP-CONNECTIVITY.txt)
@@ -120,7 +232,5 @@ L-1-1/L-1-2/L-1-3 являются ASBR, так как выполняют ред
 [Вывод команд: SHOW ](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/OUTPUT)
 
 Настройки для каждого роутера приведены здесь: [CONFIGS](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/CONFIGS)
-
-Важная для понимания информация: [ATT-BIT and OL-BIT](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/APPENDIX/ATT_OL-bit.txt)
 
 На практике необходимо использование [BFD](https://github.com/dknet77/VxLAN/tree/main/LABS/1-3/APPENDIX/IS-IS_BFD.txt)
