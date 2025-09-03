@@ -1,6 +1,5 @@
   `router bgp 65001
-  
-    neighbor 192.0.2.1 reconnect-interval 30`
+         neighbor 192.0.2.1 reconnect-interval 30`
 
  #### reconnect-interval (def. 60 sec) — это именно таймер, который определяет интервал между попытками повторного установления BGP-сессии.
 
