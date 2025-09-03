@@ -43,18 +43,36 @@
 		
 
 ---
-
-
-==Не забыть:== _установить VS Code и Node.js_
+ #### Private AS range: от 64512 до 65534
 ---
-### ???? Пример кода
-```javascript
-function greet(name) {
-  console.log(`Привет, ${name}!`);
-}
-greet('мир');
-```
-- Синтаксис и переменные
-- Функции и области видимости
-- Объекты и массивы (`const obj = {}`)
-- Циклы и условия 
+- well-known mandatory: as-path, next-hop, origin
+- well-known discretionary: local-pref, atomic aggregate
+- optional transitive: aggregator, community
+- optional non-transitive: MED, originator id, cluser id
+---
+#### BGP multipath conditions:
+- same weight
+- same local-pref
+- exactly the same as-path (not only lenght)
+  если учитывать только длину, а не содержимое as-path: L-1-1(config-router)# bestpath as-path multipath-relax
+- same origin, MED
+- same IGP metric
+- different next-hop
+---
+#### BGP Timers:
+- MRAI (Minimum Route Advertisement Interval or out-delay) = eBGP def.30 sec / iBGP=0 (Leaf/Spine --> eBGP MRAI=0)
+- keepalive = 60 (3sec)
+- hold = 180 (9 sec)
+- scan timer (next-hop tracking) = 60 sec (имеет смысл если есть multihop, а DC -> ttl=1)
+---
+#### iBGP
+  one AS для Leaf-ов
+  one AS для Spine (RR)
+  и one AS для Super Spine (RR)
+
+#### eBGP
+  each Leaf - свою ASN
+  все Spine одна ASN (двухуровневая топология)
+  все Super Spine в одной ASN, а Spine одного POD в другой ASN.
+  При этом на каждый POD у Spine своя AS-NUM.
+
