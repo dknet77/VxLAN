@@ -71,8 +71,8 @@
   и one AS для Super Spine (RR)
 
 #### eBGP
-  each Leaf - свою ASN
-  все Spine одна ASN (двухуровневая топология)
-  все Super Spine в одной ASN, а Spine одного POD в другой ASN.
-  При этом на каждый POD у Spine своя AS-NUM.
+  	each Leaf - свою ASN
+   	все Spine одна ASN (двухуровневая топология)
+	все Super Spine в одной ASN, а Spine одного POD в другой ASN.
+ 	при этом на каждый POD у Spine своя AS-NUM.
 
