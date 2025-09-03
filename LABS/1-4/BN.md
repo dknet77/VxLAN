@@ -66,9 +66,9 @@
 - scan timer (next-hop tracking) = 60 sec (имеет смысл если есть multihop, а DC -> ttl=1)
 ---
 #### iBGP
-  one AS для Leaf-ов
-  one AS для Spine (RR)
-  и one AS для Super Spine (RR)
+  	one AS для Leaf-ов
+  	one AS для Spine (RR)
+    и one AS для Super Spine (RR)
 
 #### eBGP
   	each Leaf - свою ASN
