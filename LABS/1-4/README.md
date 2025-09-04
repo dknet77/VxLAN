@@ -75,7 +75,7 @@
 	    inherit peer SPINE-IPV6
 		description *** SPINE-1-1 ***
 
-
+<span style="background-color: yellow;">желтое выделение</span>
 `==текст==`
 
   
