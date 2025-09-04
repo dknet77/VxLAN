@@ -57,7 +57,7 @@
  	   maximum-prefix 30000
   	  soft-reconfiguration inbound always
 	
-	<mark style="background-color: #FFFF00">template peer SPINE-IPV4</mark>
+    template peer SPINE-IPV4
  	   inherit peer-session SPINE-SESSION
    		 address-family ipv4 unicast
     	inherit peer-policy SPINE-IPV4-POLICY 10 ! the preference value for this peer policy
@@ -75,7 +75,7 @@
 	    inherit peer SPINE-IPV6
 		description *** SPINE-1-1 ***
 
-<mark style="background-color: #FFFF00">Выделенный текст</mark>.
+<mark style="background-color: #FFFF00"> ОЧЕНЬ ЖЕЛТЫЙ </mark>
   
 
 [Адресное пространство IPv4 и IPv6](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/ip-plan.md)
