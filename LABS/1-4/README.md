@@ -43,7 +43,7 @@
     	remote-as 64512
    		 password cisco
 
-	== template peer-policy SPINE-IPV4-POLICY ==
+	template peer-policy SPINE-IPV4-POLICY
  	   send-community extended
    	   route-map SPINE-IPV4-IN in
 	   route-map SPINE-IPV4-OUT out
@@ -76,7 +76,7 @@
 		description *** SPINE-1-1 ***
 
 
-
+`==текст==`
 
   
 
