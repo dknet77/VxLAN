@@ -3,7 +3,7 @@
 ![4-1-1.png](4-1-1.png)
 
 #### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ 
   	ip prefix-list CONNECTED seq 10 permit 10.8.0.0/24
  	 ip prefix-list CONNECTED seq 20 permit 10.0.0.11/32
   	ip prefix-list CONNECTED seq 30 permit 10.2.1.1/31
@@ -43,7 +43,7 @@
     	remote-as 64512
    		 password cisco
 
-	template peer-policy SPINE-IPV4-POLICY
+	template <mark>peer-policy</mark> SPINE-IPV4-POLICY
  	   send-community extended
    	   route-map SPINE-IPV4-IN in
 	   route-map SPINE-IPV4-OUT out
