@@ -57,10 +57,10 @@
  	   maximum-prefix 30000
   	  soft-reconfiguration inbound always
 	
-	template peer SPINE-IPV4
+	<mark style="background-color: #FFFF00">template peer SPINE-IPV4</mark>
  	   inherit peer-session SPINE-SESSION
    		 address-family ipv4 unicast
-    	nherit peer-policy SPINE-IPV4-POLICY 10 ! the preference value for this peer policy
+    	inherit peer-policy SPINE-IPV4-POLICY 10 ! the preference value for this peer policy
 
 	template peer SPINE-IPV6
   	  inherit peer-session SPINE-SESSION
@@ -75,11 +75,6 @@
 	    inherit peer SPINE-IPV6
 		description *** SPINE-1-1 ***
 
-<span style="background-color: yellow;"> желтое выделение </span>
-`==текст==`   ==текст==
-Использование тега <span>:
-<span style="background-color: #E8D3E3">Выделенный текст</span>.
-Использование тега <mark>:
 <mark style="background-color: #FFFF00">Выделенный текст</mark>.
   
 
