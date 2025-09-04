@@ -77,7 +77,10 @@
 
 <span style="background-color: yellow;"> желтое выделение </span>
 `==текст==`   ==текст==
-
+Использование тега <span>:
+<span style="background-color: #E8D3E3">Выделенный текст</span>.
+Использование тега <mark>:
+<mark style="background-color: #FFFF00">Выделенный текст</mark>.
   
 
 [Адресное пространство IPv4 и IPv6](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/ip-plan.md)
