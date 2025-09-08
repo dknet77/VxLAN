@@ -181,6 +181,11 @@
       route-reflector-client
       next-hop-self all
 
+## Общая схема (eBGP) underlay
+
+![4-1-2.png](4-1-2.png)
+
+
 
 
 
