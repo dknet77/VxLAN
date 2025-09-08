@@ -148,8 +148,38 @@
 	    inherit peer SPINE-IPV6
 		description *** SPINE-1-1 ***
 
+#### %%%%%%%%%%%%%%%%%%%%%%%%% SPINE (S-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+	route-map CONNECTED permit 10
+	  match interface loopback1
+ 	 set origin igp
+	!
+	router bgp 64512
+	  router-id 10.0.11.1
+	  timers bgp 3 9
+	  reconnect-interval 12
+	  address-family ipv4 unicast
+	    redistribute direct route-map CONNECTED
+  	    maximum-paths ibgp 2
+ 	 address-family ipv6 unicast
+   	   network fd12:3456:789a::aa:11/128
+       maximum-paths ibgp 2
+	!	
+	 neighbor fd12:3456:789a:ffff::/64  ! range
+	    remote-as 64512
+	    password cisco
+	    maximum-peers 5
+	    address-family ipv6 unicast
+   	    route-reflector-client
+        next-hop-self all
+	! 
+	 neighbor 10.0.0.0/8  ! range
+       remote-as 64512
+ 	   password cisco
+   	   maximum-peers 5
+  	  address-family ipv4 unicast
+      route-reflector-client
+      next-hop-self all
 
 
 
