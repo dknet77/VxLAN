@@ -1,4 +1,38 @@
-## Общая схема (iBGP) underlay
+## VxLAN
+Leaf1 и Leaf2 имеют подключение серверов в одном влане, но нет транков между ними.
+
+Тем не менее серверам требуется L2 подключение и такая задача решается с помощью VxLAN.
+
+Underlay сеть нужна только для доступности ip интерфейсов (loopbacks, ptp).
+
+Overlay передает необходимые данные об удаленном L2 сегменте поверх L3 сети.
+
+Два роутера могут связать один влан через L3 cеть без настроек EVPN.
+
+	feature vn-segment-vlan-based
+	feature nv overlay
+ 
+ 	vlan 8
+  		name SERVER-VLAN
+  		vn-segment 10008
+	
+	interface Ethernet1/4
+  		description *** LINK TO SERVER ***
+  		switchport access vlan 8
+
+	interface nve1 
+ 		 no shutdown
+ 		 source-interface loopback2
+ 		 member vni 10008
+		ingress-replication protocol static
+  			peer 10.1.0.12
+	 		
+ Интерфейс nve по сути похож на туннельный интерфейс GRE.
+ ingress-replication указывает каким способом будет расспостраняться BUM трафик. В этом случае статически прописан второй роутер, у которого есть подключение в том же влане.
+При увеличении кол-ва Leaf-коммутаторов и вланов которые необходимо растянуть по всей сети, такой подход не маштабируем. EVPN решает эти задачи в топологии Spine&Leaf.
+EVPN использует BGP и в зависимости от того используется iBGP или eBGP сущестуют важные нюансы.
+
+## VxLAN + EVPN при iBGP (Overlay)
 
 ![4-1-1.png](4-1-1.png)
 
@@ -181,7 +215,7 @@
       route-reflector-client
       next-hop-self all
 
-## Общая схема (eBGP) underlay
+ ## VxLAN + EVPN при eBGP (Overlay)
 
 ![4-1-2.png](4-1-2.png)
 
