@@ -173,6 +173,58 @@ Overlay передает необходимые данные об удаленн
 		neighbor 10.1.0.12
 			inherit peer LEAF-IPV4-OVERLAY
 
+#### %%%%%%%%%%%%%%%%%%%%%%%%% решение по ситуации с BUM-трафиком: Suppress-ARP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+При увеличении кол-ва хостов возникает проблема BUM. Основной генератор Broadcast в Ethernet сетях сами хосты через протокол ARP.
+
+На nexus реализован следующий механизм для борьбы с ARP запросами — suppress-arp.
+
+Работа данной фичи выглядит следующим образом:
+
+    1) Host-1 отправляет APR запрос на Broadcast адрес своей сети.
+	
+    2) Запрос доходит до Leaf коммутатора и вместо того чтобы передать этот запрос дальше в фабрику в сторону Host-2 — Leaf отвечает сам и указывает нужный IP и MAC.
+	
+Чтобы Leaf знал ip надо чтобы он получал и отправлял EVPN route-type 2 (mac&ip).
+
+Для этого мы на каждом Leaf создадим SVI c одинаковым IP и одним virtual MAC.
+
+    nv overlay evpn
+
+	feature interface-vlan
+
+	fabric forwarding anycast-gateway-mac 0001.0001.0001
+    ! задаем virtual mac для создания распределенного шлюза между всеми коммутаторами
+
+	interface Vlan8
+		no shutdown
+		ip address 10.8.0.1/24          ! на всех Leaf задаем одинаковый IP
+		fabric forwarding mode anycast-gateway    ! говорим использовать Virtual mac
+
+	interface nve1
+		member vni 10008   
+		suppress-arp ! включаем для каждого VNI отдельно
+
+Дальше возникает некоторая сложность:
+
+Для работы данной фичи необходимо место в TCAM памяти. Приведу пример настройки для suppress-arp:
+
+hardware access-list tcam region arp-ether 256
+
+Для данной настройки потребуется double-wide. То есть если задаете 256, то в TCAM необходимо освободить 512.
+
+Настройка TCAM выходит за пределы данной статьи, так как настройка TCAM зависит только от задачи поставленной перед Вами и может отличаться от одной сети к другой.
+
+Внедрение suppress-arp необходимо сделать на всех Leaf коммутаторах. Однако сложность может возникнуть при настройке на парах Leaf, находящихся в домене VPC.
+
+При изменении TCAM, консистенция между парами будет нарушена и одна нода может быть выведена из работы.
+
+Дополнительно для применения настройки изменении TCAM может потребоваться перезагрузка устройства.
+
+
+ 
+[VxLAN+EVPN+iBGP: OUTPUT](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/iBGP-OUTPUT.txt)
+
+
  ## VxLAN + EVPN при eBGP (Overlay)
 
 ![4-1-2.png](4-1-2.png)
@@ -219,4 +271,4 @@ Overlay передает необходимые данные об удаленн
 
 [Remarks](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/BN.md)
 
-[iBGP: IP-CONNECTIVITY](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/iBGP-CHECK.txt)
+
