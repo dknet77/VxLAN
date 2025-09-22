@@ -225,7 +225,9 @@ Overlay передает необходимые данные об удаленн
 -------------------------------------------------------------------------------------------------------------
 
 
-[PRINTOUT](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/OUPUT/VxLAN_iBGP.txt)
+[PRINTOUT- with iBGP](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/OUPUT/VxLAN_iBGP.txt)
+
+[PRINTOUT - with eBGP](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/OUPUT/eBGP.txt)
 
 [REMARKS](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/APPENDIX/NB.txt)
 
