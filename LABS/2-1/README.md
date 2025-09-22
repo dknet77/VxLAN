@@ -51,9 +51,8 @@ Overlay передает необходимые данные об удаленн
     nv overlay evpn ! в качестве overlay будет evpn
 
     interface loopback2
-     ip address 10.1.0.11/32
-     ipv6 address fd12:3456:789a:1::bb:11/128
-
+     ip address 10.1.0.11/32 ! надо сделать доступным через underlay
+    
     interface Ethernet1/4
      description *** LINK TO VPC1 ***
      switchport access vlan 8
@@ -97,76 +96,52 @@ Overlay передает необходимые данные об удаленн
           inherit peer SPINE-IPV4-OVERLAY
 #### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-2) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	ip prefix-list CONNECTED seq 10 permit 10.9.0.0/24
-	ip prefix-list CONNECTED seq 20 permit 10.0.0.12/32
-	ip prefix-list CONNECTED seq 30 permit 10.2.1.3/31
-	ip prefix-list CONNECTED seq 40 permit 10.2.2.3/31
-	!
-	route-map CONNECTED permit 10
-	  match ip address prefix-list CONNECTED
-	  set origin igp
-	!
-	ip as-path access-list OWN-AS seq 10 permit "^$"
-	!
-	route-map SPINE-IPV4-IN permit 10
-	  match as-path OWN-AS
- 	 set local-preference 150
-	!
-	route-map SPINE-IPV4-OUT permit 10
-	!
-	route-map SPINE-IPV6-IN permit 10
-	  match as-path OWN-AS
-	  set local-preference 150
-	!
-	route-map SPINE-IPV6-OUT permit 10
-	!
+    feature vn-segment-vlan-based 
+    feature nv overlay 
+    nv overlay evpn 
+
+	interface loopback2
+		ip address 10.1.0.12/32  
+		
+	interface Ethernet1/4
+		description *** LINK TO VPC2 ***
+		switchport access vlan 8
+
+	vlan 8
+	name VPC8
+	vn-segment 10008
+
+	interface nve1
+		no shutdown
+		host-reachability protocol bgp
+		source-interface loopback2
+		member vni 10008
+		ingress-replication protocol bgp 
+
+	evpn
+		vni 10008 l2
+		rd auto
+		route-target import auto
+		route-target export auto
+
 	router bgp 64512
-	  router-id 10.0.0.12
- 	 timers bgp 3 9
-  	reconnect-interval 12
- 	 address-family ipv4 unicast
-  	  redistribute direct route-map CONNECTED
-  	  maximum-paths ibgp 2
-  	address-family ipv6 unicast
-	    network fd12:3456:789a::bb:12/128
- 	   maximum-paths ibgp 2
+		router-id 10.0.0.12
+		timers bgp 3 9
+		bestpath as-path multipath-relax
+		reconnect-interval 12
 
-	template peer-session SPINE-SESSION
-	    ! bfd
-  	   remote-as 64512
- 	   password cisco
+			address-family l2vpn evpn
+				maximum-paths 10
 
-	template peer-policy SPINE-IPV4-POLICY
- 	   send-community extended
- 	   route-map SPINE-IPV4-IN in
- 	   route-map SPINE-IPV4-OUT out
-  	   maximum-prefix 30000
- 	   soft-reconfiguration inbound always
+		template peer SPINE-IPV4-OVERLAY
+			remote-as 64512
+			update-source loopback2
+				address-family l2vpn evpn
+					send-community
+					send-community extended
 
-	template peer-policy SPINE-IPV6-POLICY
- 	   send-community extended
- 	   route-map SPINE-IPV6-IN in
-  	   route-map SPINE-IPV6-OUT out
-  	  maximum-prefix 30000
-  	  soft-reconfiguration inbound always
-	
-	template peer SPINE-IPV4
-	    inherit peer-session SPINE-SESSION
-  	   address-family ipv4 unicast
-       inherit peer-policy SPINE-IPV4-POLICY 10 ! the preference value for this peer policy
-
-	template peer SPINE-IPV6
-	    inherit peer-session SPINE-SESSION
- 	    address-family ipv6 unicast
-        inherit peer-policy SPINE-IPV6-POLICY 10
-
-	neighbor 10.2.1.2
-	    inherit peer SPINE-IPV4
- 	   description *** SPINE-1-1 ***
-	
-	neighbor fd12:3456:789a:ffff:ffff:dddd:1:2
-	    inherit peer SPINE-IPV6
-		description *** SPINE-1-1 ***
+		neighbor 10.1.11.1
+			inherit peer SPINE-IPV4-OVERLAY
 
 #### %%%%%%%%%%%%%%%%%%%%%%%%% SPINE (S-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
