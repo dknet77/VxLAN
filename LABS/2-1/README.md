@@ -45,55 +45,54 @@ Overlay передает необходимые данные об удаленн
 ![4-1-1.png](4-1-1.png)
 
 #### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+    feature vn-segment-vlan-based ! Service Model: VlanBased - У каждого VLAN свой MAC-VRF (свои RD/RT) (N:N)
+    feature nv overlay ! дла работы VxLAN
+    nv overlay evpn ! в качестве overlay будет evpn
 
-   feature vn-segment-vlan-based ! Service Model: VlanBased - У каждого VLAN свой MAC-VRF (свои RD/RT) (N:N)
-   feature nv overlay ! дла работы VxLAN
-   nv overlay evpn ! в качестве overlay будет evpn
-   !
-   interface loopback2
+    interface loopback2
      ip address 10.1.0.11/32
      ipv6 address fd12:3456:789a:1::bb:11/128
-   !
-   interface Ethernet1/4
+
+    interface Ethernet1/4
      description *** LINK TO VPC1 ***
      switchport access vlan 8
-   !
+
     vlan 8
      name VPC8
      vn-segment 10008 ! Ассоциируем VLAN с номер VNI 
-   !
-   interface nve1 
+    
+    interface nve1 
      no shutdown
      host-reachability protocol bgp
      source-interface loopback2
      member vni 10008 ! Добавляем VNI 10000 для работы через интерфейс NVE. для инкапсуляции в VxLAN
         ingress-replication protocol bgp ! указываем, что для распространения BUM трафика используем BGP
-    !
+
     evpn
      vni 10008 l2
           rd auto    ! auto-derived Route Distinguisher (RD): MAC-VRF with BGP Router ID 10.0.0.11 and VLAN 8 (32767+8) - RD 10.0.0.11:32775
           route-target import auto !     auto derived Route-Target (RT): MAC-VRF within ASN 64512 and L2VNI 10008 - Route-Target 64512:10008
           route-target export auto
-   !
-   router bgp 64512
+
+    router bgp 64512
      router-id 10.0.0.11
      timers bgp 3 9
      bestpath as-path multipath-relax
      reconnect-interval 12
-   !
+
      address-family l2vpn evpn
           maximum-paths 10
-   !
+
      template peer SPINE-IPV4-OVERLAY
           remote-as 64512
           update-source loopback2
           address-family l2vpn evpn
                send-community
                send-community extended
-    !
+
      neighbor 10.1.11.1
           inherit peer SPINE-IPV4-OVERLAY
-    !
 #### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-2) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	ip prefix-list CONNECTED seq 10 permit 10.9.0.0/24
