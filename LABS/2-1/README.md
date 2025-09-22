@@ -286,7 +286,57 @@ Overlay передает необходимые данные об удаленн
 			inherit peer SPINE-IPV4-OVERLAY
 			
 #### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-3) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	feature vn-segment-vlan-based
+	feature nv overlay
+	feature bgp
+	nv overlay evpn
 
+	interface loopback2
+		ip address 10.1.0.13/32  
+		ip router ospf 11 area 0.0.0.3 ! надо сделать доступным через underlay
+
+	interface Ethernet1/4
+		description *** LINK TO VPC2 ***
+		switchport access vlan 8
+		no shut
+
+	vlan 8
+		name VPC8
+		vn-segment 10008
+
+	interface nve1
+		no shutdown
+		host-reachability protocol bgp
+		source-interface loopback2
+		member vni 10008
+		ingress-replication protocol bgp 
+
+	evpn
+		vni 10008 l2
+			rd auto
+			route-target import auto
+			route-target export auto
+
+	router bgp 64514
+		router-id 10.0.0.13
+		timers bgp 3 9
+		bestpath as-path multipath-relax
+		reconnect-interval 12
+	address-family l2vpn evpn
+		maximum-paths 10
+		retain route-target all
+	template peer SPINE-IPV4-OVERLAY
+		remote-as 65000
+		update-source loopback2
+		ebgp-multihop 2
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+	neighbor 10.1.12.1
+		inherit peer SPINE-IPV4-OVERLAY
+
+#### %%%%%%%%%%%%%%%%%%%%%%%%% SPINE (S-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 [Адресное пространство IPv4 и IPv6](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/ip-plan.md)
