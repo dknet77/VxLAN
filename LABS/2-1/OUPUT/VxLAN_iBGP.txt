@@ -1,4 +1,5 @@
-VPCS-1-1> show ip all
+Legend:
+VPCS-1-1# show ip all
 
 NAME   IP/MASK              GATEWAY           MAC                DNS
 VPCS1  10.8.0.100/24        10.8.0.1          00:50:79:66:68:02
