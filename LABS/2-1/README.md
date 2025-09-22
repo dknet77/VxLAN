@@ -145,36 +145,33 @@ Overlay передает необходимые данные об удаленн
 
 #### %%%%%%%%%%%%%%%%%%%%%%%%% SPINE (S-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	route-map CONNECTED permit 10
-	  match interface loopback1
- 	 set origin igp
-	!
+	    nv overlay evpn
+
+	interface loopback2
+		ip address 10.1.11.1/32
+ 
 	router bgp 64512
-	  router-id 10.0.11.1
-	  timers bgp 3 9
-	  reconnect-interval 12
-	  address-family ipv4 unicast
-	    redistribute direct route-map CONNECTED
-  	    maximum-paths ibgp 2
- 	 address-family ipv6 unicast
-   	   network fd12:3456:789a::aa:11/128
-       maximum-paths ibgp 2
-	!	
-	 neighbor fd12:3456:789a:ffff::/64  ! range
-	    remote-as 64512
-	    password cisco
-	    maximum-peers 5
-	    address-family ipv6 unicast
-   	    route-reflector-client
-        next-hop-self all
-	! 
-	 neighbor 10.0.0.0/8  ! range
-       remote-as 64512
- 	   password cisco
-   	   maximum-peers 5
-  	  address-family ipv4 unicast
-      route-reflector-client
-      next-hop-self all
+		router-id 10.0.11.1
+		timers bgp 3 9
+		reconnect-interval 12
+		log-neighbor-changes
+
+			address-family l2vpn evpn
+			maximum-paths 10
+
+		template peer LEAF-IPV4-OVERLAY
+			remote-as 64512
+			update-source loopback2
+				address-family l2vpn evpn
+					route-reflector-client
+					send-community
+					send-community extended
+
+		neighbor 10.1.0.11
+			inherit peer LEAF-IPV4-OVERLAY
+
+		neighbor 10.1.0.12
+			inherit peer LEAF-IPV4-OVERLAY
 
  ## VxLAN + EVPN при eBGP (Overlay)
 
