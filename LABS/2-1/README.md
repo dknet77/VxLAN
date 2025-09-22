@@ -71,8 +71,10 @@ Overlay передает необходимые данные об удаленн
 
     evpn
      vni 10008 l2
-          rd auto    ! auto-derived Route Distinguisher (RD): MAC-VRF with BGP Router ID 10.0.0.11 and VLAN 8 (32767+8) - RD 10.0.0.11:32775
-          route-target import auto !     auto derived Route-Target (RT): MAC-VRF within ASN 64512 and L2VNI 10008 - Route-Target 64512:10008
+          rd auto    
+		  ! auto-derived Route Distinguisher (RD): MAC-VRF with BGP Router ID 10.0.0.11 and VLAN 8 (32767+8) - RD 10.0.0.11:32775
+          route-target import auto 
+		  !  auto derived Route-Target (RT): MAC-VRF within ASN 64512 and L2VNI 10008 - Route-Target 64512:10008
           route-target export auto
 
     router bgp 64512
