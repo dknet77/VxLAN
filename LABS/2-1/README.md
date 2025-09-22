@@ -222,14 +222,14 @@ Overlay передает необходимые данные об удаленн
 Дополнительно для применения настройки изменении TCAM может потребоваться перезагрузка устройства.
 
 
-##-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 
 
-[VxLAN+EVPN+iBGP: PRINTOUT](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/OUTPUT/VxLAN_iBGP.txt)
+[PRINTOUT](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/OUTPUT/VxLAN_iBGP.txt)
 
-[VxLAN+EVPN+iBGP: REMARKS](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/APPENDIX/NB.txt)
+[REMARKS](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/APPENDIX/NB.txt)
 
-
+-------------------------------------------------------------------------------------------------------------
 
  ## VxLAN + EVPN при eBGP (Overlay)
 
