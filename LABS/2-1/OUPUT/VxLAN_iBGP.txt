@@ -1,6 +1,4 @@
-Legend:
 VPCS-1-1# show ip all
-
 NAME   IP/MASK              GATEWAY           MAC                DNS
 VPCS1  10.8.0.100/24        10.8.0.1          00:50:79:66:68:02
 
@@ -191,6 +189,8 @@ Multipath: eBGP
       Received label 10008
       Extcommunity: RT:64512:10008 ENCAP:8
       Originator: 10.0.0.12 Cluster list: 10.0.11.1
+
+
 
   Path-id 1 not advertised to any peer
 
