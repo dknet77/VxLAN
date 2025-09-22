@@ -229,6 +229,8 @@ Overlay передает необходимые данные об удаленн
 
 [REMARKS](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/APPENDIX/NB.txt)
 
+[Адресное пространство IPv4 и IPv6](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/ip-plan.md)
+
 -------------------------------------------------------------------------------------------------------------
 
  ## VxLAN + EVPN при eBGP (Overlay)
@@ -337,10 +339,37 @@ Overlay передает необходимые данные об удаленн
 		inherit peer SPINE-IPV4-OVERLAY
 
 #### %%%%%%%%%%%%%%%%%%%%%%%%% SPINE (S-1-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	nv overlay evpn
+
+	interface loopback2
+		ip address 10.1.12.1/32
+		ip router ospf 11 area 0.0.0.0
+	
+	route-map NEXT-HOP-UNCHANGED permit 10
+		set ip next-hop unchanged                   ! eBGP moment
+  
+	router bgp 65000
+		router-id 10.0.12.1
+		timers bgp 3 9
+		reconnect-interval 12
+		log-neighbor-changes
+	ddress-family l2vpn evpn
+		maximum-paths 10
+	template peer LEAF-IPV4-OVERLAY
+		update-source loopback2
+		ebgp-multihop 5                             ! eBGP moment
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map NEXT-HOP-UNCHANGED out  			! eBGP moment
+	  rewrite-evpn-rt-asn 							! eBGP moment
+	neighbor 10.1.0.12
+		inherit peer LEAF-IPV4-OVERLAY
+		remote-as 64513  							! eBGP moment
+	neighbor 10.1.0.13
+		inherit peer LEAF-IPV4-OVERLAY
+		remote-as 64514  							! eBGP moment
 
 
-[Адресное пространство IPv4 и IPv6](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/ip-plan.md)
-
-[Remarks](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/BN.md)
 
 
