@@ -235,42 +235,58 @@ Overlay передает необходимые данные об удаленн
 
 ![4-1-2.png](4-1-2.png)
 
-<mark style="background-color: #FFFF00"> ОБЩИЙ ПОДХОД </mark>
+#### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-2) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	feature vn-segment-vlan-based
+	feature nv overlay
+	feature bgp
+	nv overlay evpn
+	
+	interface loopback2
+		ip address 10.1.0.12/32  
+		ip router ospf 11 area 0.0.0.2 ! надо сделать доступным через underlay
 
-#### iBGP
-  	one AS для Leaf-ов
-  	one AS для Spine (RR)
-    и one AS для Super Spine (RR)
+	interface Ethernet1/4
+		description *** LINK TO VPC2 ***
+		switchport access vlan 8
+		no shut
 
-#### eBGP
-  	each Leaf - свою ASN
-   	все Spine одна ASN (двухуровневая топология)
-	все Super Spine в одной ASN, а Spine одного POD в другой ASN.
- 	при этом на каждый POD у Spine своя AS-NUM.
+	vlan 8
+		name VPC8
+		vn-segment 10008
+	
+	interface nve1
+		no shutdown
+		host-reachability protocol bgp
+		source-interface loopback2
+		member vni 10008
+			ingress-replication protocol bgp 
 
----
- #### Private AS range: от 64512 до 65534
----
-- well-known mandatory: as-path, next-hop, origin
-- well-known discretionary: local-pref, atomic aggregate
-- optional transitive: aggregator, community
-- optional non-transitive: MED, originator id, cluser id
----
-#### BGP multipath conditions:
-- same weight
-- same local-pref
-- exactly the same as-path (not only lenght)
-  если учитывать только длину, а не содержимое as-path: L-1-1(config-router)# bestpath as-path multipath-relax
-- same origin, MED
-- same IGP metric
-- different next-hop
----
-#### BGP Timers:
-- MRAI (Minimum Route Advertisement Interval or out-delay) = eBGP def.30 sec / iBGP=0 (Leaf/Spine --> eBGP MRAI=0)
-- keepalive = 60 (3sec)
-- hold = 180 (9 sec)
-- scan timer (next-hop tracking) = 60 sec (имеет смысл если есть multihop, а DC -> ttl=1)
----
+		evpn
+			vni 10008 l2
+			rd auto
+			route-target import auto
+			route-target export auto
+
+		router bgp 64513
+			router-id 10.0.0.12
+			timers bgp 3 9
+			bestpath as-path multipath-relax
+			reconnect-interval 12
+		address-family l2vpn evpn
+			maximum-paths 10
+		template peer SPINE-IPV4-OVERLAY
+			remote-as 65000
+			update-source loopback2
+			ebgp-multihop 2
+			address-family l2vpn evpn
+			send-community
+			send-community extended
+			rewrite-evpn-rt-asn
+		neighbor 10.1.12.1
+			inherit peer SPINE-IPV4-OVERLAY
+			
+#### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-3) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 [Адресное пространство IPv4 и IPv6](https://github.com/dknet77/VxLAN/tree/main/LABS/1-4/ip-plan.md)
