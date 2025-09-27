@@ -40,7 +40,6 @@
 			address-family ipv4 unicast
 				route-target both auto
 				route-target both auto evpn
-		vrf context management
 		!
 		interface Vlan8
 			no shutdown
