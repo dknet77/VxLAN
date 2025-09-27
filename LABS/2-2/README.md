@@ -14,144 +14,95 @@
 Для этого на всех Leaf роутерах, надо создать влан 999 и VRF: INTER-VLAN. Затем надо L3 интерфейсы (SVI) включить в этот VRF.
 
 ![2-2-2.png](2-2-2.png)
-#### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-2) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	feature vn-segment-vlan-based
-	feature nv overlay
-	feature bgp
-	nv overlay evpn
-	
-	interface loopback2
-		ip address 10.1.0.12/32  
-		ip router ospf 11 area 0.0.0.2 ! надо сделать доступным через underlay
-
-	interface Ethernet1/4
-		description *** LINK TO VPC2 ***
-		switchport access vlan 8
-		no shut
-
-	vlan 8
-		name VPC8
-		vn-segment 10008
-	
-	interface nve1
-		no shutdown
-		host-reachability protocol bgp
-		source-interface loopback2
-		member vni 10008
-			ingress-replication protocol bgp 
-
+#### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		nv overlay evpn
+		feature ospf
+		feature bgp
+		feature interface-vlan
+		feature vn-segment-vlan-based
+		feature nv overlay
+		!
+		fabric forwarding anycast-gateway-mac 0033.3333.3333
+		!
+		vlan 8
+			name VPC8
+			vn-segment 10008
+		vlan 10
+			name VLAN10
+			vn-segment 10010
+		vlan 999
+			name L3_VNI
+			vn-segment 100999
+		!
+		vrf context INTER-VLAN
+			vni 100999
+			rd auto
+			address-family ipv4 unicast
+				route-target both auto
+				route-target both auto evpn
+		vrf context management
+		!
+		interface Vlan8
+			no shutdown
+			vrf member INTER-VLAN
+			ip address 10.8.0.1/24
+			fabric forwarding mode anycast-gateway
+		!
+		interface Vlan10
+			no shutdown
+			vrf member INTER-VLAN
+			ip address 10.10.0.1/24
+			fabric forwarding mode anycast-gateway
+		!
+		interface Vlan999
+			no shutdown
+			vrf member INTER-VLAN
+			ip forward
+		!
+		interface nve1
+			no shutdown
+			host-reachability protocol bgp
+			source-interface loopback2
+			member vni 10008
+				ingress-replication protocol bgp
+			member vni 10010
+				ingress-replication protocol bgp
+			member vni 100999 associate-vrf
+		!
+		interface Ethernet1/4
+			switchport access vlan 8
+		!	
+		interface Ethernet1/5
+			switchport access vlan 10
+		!
+		router bgp 64514
+ 		 router-id 10.0.0.13
+  		timers bgp 3 9
+  		bestpath as-path multipath-relax
+  		reconnect-interval 12
+  		address-family l2vpn evpn
+    		maximum-paths 10
+  		template peer SPINE-IPV4-OVERLAY
+    		remote-as 65000
+    		update-source loopback2
+    		ebgp-multihop 2
+    		address-family l2vpn evpn
+      		send-community
+      		send-community extended
+      		rewrite-evpn-rt-asn
+  		neighbor 10.1.12.1
+    		inherit peer SPINE-IPV4-OVERLAY
+		!	
 		evpn
-			vni 10008 l2
-			rd auto
-			route-target import auto
-			route-target export auto
+  		 vni 10008 l2
+    		rd auto
+    		route-target import auto
+    		route-target export auto
+  		 vni 10010 l2
+    		rd auto
+    		route-target import auto
+    		route-target export auto
 
-		router bgp 64513
-			router-id 10.0.0.12
-			timers bgp 3 9
-			bestpath as-path multipath-relax
-			reconnect-interval 12
-		address-family l2vpn evpn
-			maximum-paths 10
-		template peer SPINE-IPV4-OVERLAY
-			remote-as 65000
-			update-source loopback2
-			ebgp-multihop 2
-			address-family l2vpn evpn
-			send-community
-			send-community extended
-			rewrite-evpn-rt-asn
-		neighbor 10.1.12.1
-			inherit peer SPINE-IPV4-OVERLAY
-			
-#### %%%%%%%%%%%%%%%%%%%%%%%%% LEAF (L-1-3) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	feature vn-segment-vlan-based
-	feature nv overlay
-	feature bgp
-	nv overlay evpn
-
-	interface loopback2
-		ip address 10.1.0.13/32  
-		ip router ospf 11 area 0.0.0.3 ! надо сделать доступным через underlay
-
-	interface Ethernet1/4
-		description *** LINK TO VPC2 ***
-		switchport access vlan 8
-		no shut
-
-	vlan 8
-		name VPC8
-		vn-segment 10008
-
-	interface nve1
-		no shutdown
-		host-reachability protocol bgp
-		source-interface loopback2
-		member vni 10008
-		ingress-replication protocol bgp 
-
-	evpn
-		vni 10008 l2
-			rd auto
-			route-target import auto
-			route-target export auto
-
-	router bgp 64514
-		router-id 10.0.0.13
-		timers bgp 3 9
-		bestpath as-path multipath-relax
-		reconnect-interval 12
-	address-family l2vpn evpn
-		maximum-paths 10
-		retain route-target all
-	template peer SPINE-IPV4-OVERLAY
-		remote-as 65000
-		update-source loopback2
-		ebgp-multihop 2
-    address-family l2vpn evpn
-      send-community
-      send-community extended
-      rewrite-evpn-rt-asn
-	neighbor 10.1.12.1
-		inherit peer SPINE-IPV4-OVERLAY
-
-#### %%%%%%%%%%%%%%%%%%%%%%%%% SPINE (S-2-1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	nv overlay evpn
-
-	interface loopback2
-		ip address 10.1.12.1/32
-		ip router ospf 11 area 0.0.0.0
-	
-	route-map NEXT-HOP-UNCHANGED permit 10
-		set ip next-hop unchanged                   ! eBGP moment
-  
-	router bgp 65000
-		router-id 10.0.12.1
-		timers bgp 3 9
-		reconnect-interval 12
-		log-neighbor-changes
-	ddress-family l2vpn evpn
-		maximum-paths 10
-	template peer LEAF-IPV4-OVERLAY
-		update-source loopback2
-		ebgp-multihop 5                             ! eBGP moment
-    address-family l2vpn evpn
-      send-community
-      send-community extended
-      route-map NEXT-HOP-UNCHANGED out  			! eBGP moment
-	  rewrite-evpn-rt-asn 							! eBGP moment
-	neighbor 10.1.0.12
-		inherit peer LEAF-IPV4-OVERLAY
-		remote-as 64513  							! eBGP moment
-	neighbor 10.1.0.13
-		inherit peer LEAF-IPV4-OVERLAY
-		remote-as 64514  							! eBGP moment
-
-#### %%%%%%%%%%%%%%%%%%%%%%%%%%% eVPN L3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-		 
 #### %%%%%%%%%%%%%%%% решение по ситуации с BUM-трафиком: Suppress-ARP %%%%%%%%%%%%%%%%%%
 При увеличении кол-ва хостов возникает проблема BUM. Основной генератор Broadcast в Ethernet сетях сами хосты через протокол ARP.
 
@@ -192,7 +143,7 @@
 
 Для данной настройки потребуется double-wide. То есть если задаете 256, то в TCAM необходимо освободить 512.
 
-Настройка TCAM выходит за пределы данной статьи, так как настройка TCAM зависит только от задачи поставленной перед Вами и может отличаться от одной сети к другой.
+Настройка TCAM требуют отдельного обсуждения, так как настройка TCAM зависит только от задачи поставленной перед Вами и может отличаться от одной сети к другой.
 
 Внедрение suppress-arp необходимо сделать на всех Leaf коммутаторах. Однако сложность может возникнуть при настройке на парах Leaf, находящихся в домене VPC.
 
