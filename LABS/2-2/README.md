@@ -154,7 +154,7 @@
 -------------------------------------------------------------------------------------------------------------
 
 
-[OUTPUT](https://github.com/dknet77/VxLAN/tree/main/LABS/2-2/OUPUT/Output.txt)
+[OUTPUT](https://github.com/dknet77/VxLAN/tree/main/LABS/2-2/OUTPUT/Output.txt)
 
 [REMARKS](https://github.com/dknet77/VxLAN/tree/main/LABS/2-1/APPENDIX/NB.txt)
 
